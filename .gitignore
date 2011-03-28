@@ -4,6 +4,8 @@
 bin/
 gen/
 R.java
+target/
+*/target/
 
 # local ant properties
 local.properties
