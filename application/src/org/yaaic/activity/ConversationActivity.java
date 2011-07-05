@@ -132,6 +132,12 @@ public class ConversationActivity extends Activity implements ServiceConnection,
 
         serverId = getIntent().getExtras().getInt("serverId");
         server = Yaaic.getInstance().getServerById(serverId);
+
+        // Finish activity if server does not exist anymore - See #55
+        if (server == null) {
+            this.finish();
+        }
+
         setTitle("Yaaic - " + server.getTitle());
 
         setContentView(R.layout.conversations);
@@ -465,6 +471,11 @@ public class ConversationActivity extends Activity implements ServiceConnection,
             if (server.getStatus() == Status.CONNECTING) {
                 deckAdapter.clearConversations();
                 deckAdapter.addItem(server.getConversation(ServerInfo.DEFAULT_NAME));
+                return;
+            }
+
+            // Service is not connected or initialized yet - See #54
+            if (binder == null || binder.getService() == null || binder.getService().getSettings() == null) {
                 return;
             }
 

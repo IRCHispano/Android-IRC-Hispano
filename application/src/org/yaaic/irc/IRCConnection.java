@@ -160,8 +160,12 @@ public class IRCConnection extends PircBot
     /**
      * On register
      */
+    @Override
     public void onRegister()
     {
+        // Call parent method to ensure "register" status is tracked
+        super.onRegister();
+
         // execute commands
         CommandParser parser = CommandParser.getInstance();
 
@@ -451,6 +455,19 @@ public class IRCConnection extends PircBot
     {
         if (getNick().equalsIgnoreCase(newNick)) {
             this.updateNickMatchPattern();
+
+            // Send message about own change to server info window
+            Message message = new Message(service.getString(R.string.message_self_rename, newNick));
+            message.setColor(Message.COLOR_GREEN);
+            server.getConversation(ServerInfo.DEFAULT_NAME).addMessage(message);
+
+            Intent intent = Broadcast.createConversationIntent(
+                Broadcast.CONVERSATION_MESSAGE,
+                server.getId(),
+                ServerInfo.DEFAULT_NAME
+            );
+
+            service.sendBroadcast(intent);
         }
 
         Vector<String> channels = getChannelsByNickname(newNick);
@@ -1047,6 +1064,9 @@ public class IRCConnection extends PircBot
     @Override
     public void onDisconnect()
     {
+        // Call parent method to ensure "register" status is tracked
+        super.onDisconnect();
+
         if (service.getSettings().isReconnectEnabled() && server.getStatus() != Status.DISCONNECTED) {
             setAutojoinChannels(server.getCurrentChannelNames());
 
