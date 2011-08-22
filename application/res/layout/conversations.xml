@@ -19,13 +19,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<LinearLayout
+<org.yaaic.view.ConversationLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#ff181818">
     <LinearLayout
+    	android:id="@+id/status_layout"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -42,6 +43,7 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
             android:paddingLeft="3dp"
             android:textSize="12sp"
             android:text="Server"
+            android:maxLines="1"
             android:layout_weight="1" />
     </LinearLayout>
     <ViewSwitcher
@@ -71,7 +73,7 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:singleLine="true"
+            android:inputType="textImeMultiLine"
             android:imeOptions="actionSend" />
         <Button
             android:id="@+id/speech"
@@ -80,4 +82,4 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
             android:drawableLeft="@android:drawable/ic_btn_speak_now"
             android:visibility="gone" />
     </LinearLayout>
-</LinearLayout>
+</org.yaaic.view.ConversationLayout>

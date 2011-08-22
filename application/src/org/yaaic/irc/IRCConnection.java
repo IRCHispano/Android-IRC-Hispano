@@ -53,6 +53,12 @@ public class IRCConnection extends PircBot
     private ArrayList<String> autojoinChannels;
     private Pattern mNickMatch;
 
+    private boolean ignoreMOTD = true;
+
+    private boolean isQuitting = false;
+    private boolean disposeRequested = false;
+    private final Object isQuittingLock = new Object();
+
     /**
      * Create a new connection
      * 
@@ -136,16 +142,24 @@ public class IRCConnection extends PircBot
     public void onConnect()
     {
         server.setStatus(Status.CONNECTED);
+        
+        server.setMayReconnect(true);
+
+        ignoreMOTD = service.getSettings().isIgnoreMOTDEnabled();
 
         service.sendBroadcast(
             Broadcast.createServerIntent(Broadcast.SERVER_UPDATE, server.getId())
         );
 
-        service.updateNotification(service.getString(R.string.notification_connected, server.getTitle()));
+        service.notifyConnected(server.getTitle());
 
         Message message = new Message(service.getString(R.string.message_connected, server.getTitle()));
         message.setColor(Message.COLOR_GREEN);
         server.getConversation(ServerInfo.DEFAULT_NAME).addMessage(message);
+
+        Message infoMessage = new Message(service.getString(R.string.message_now_login));
+        infoMessage.setColor(Message.COLOR_GREY);
+        server.getConversation(ServerInfo.DEFAULT_NAME).addMessage(infoMessage);
 
         Intent intent = Broadcast.createConversationIntent(
             Broadcast.CONVERSATION_MESSAGE,
@@ -153,9 +167,12 @@ public class IRCConnection extends PircBot
             ServerInfo.DEFAULT_NAME
         );
 
+        if (server.getAuthentication().hasNickservCredentials()) {
+            identify(server.getAuthentication().getNickservPassword());
+        }
+
         service.sendBroadcast(intent);
     }
-
 
     /**
      * On register
@@ -196,6 +213,18 @@ public class IRCConnection extends PircBot
                 joinChannel(channel);
             }
         }
+
+        Message infoMessage = new Message(service.getString(R.string.message_login_done));
+        infoMessage.setColor(Message.COLOR_GREY);
+        server.getConversation(ServerInfo.DEFAULT_NAME).addMessage(infoMessage);
+
+        Intent intent = Broadcast.createConversationIntent(
+            Broadcast.CONVERSATION_MESSAGE,
+            server.getId(),
+            ServerInfo.DEFAULT_NAME
+        );
+
+        service.sendBroadcast(intent);
     }
     /**
      * On channel action
@@ -203,54 +232,64 @@ public class IRCConnection extends PircBot
     @Override
     protected void onAction(String sender, String login, String hostname, String target, String action)
     {
+        Conversation conversation;
+
         Message message = new Message(sender + " " + action);
         message.setIcon(R.drawable.action);
 
-        if (isMentioned(action)) {
-            // highlight
-            message.setColor(Message.COLOR_RED);
-            service.updateNotification(
-                target + ": " + sender + " " + action,
-                service.getSettings().isVibrateHighlightEnabled(),
-                service.getSettings().isSoundHighlightEnabled()
-            );
-
-            server.getConversation(target).setStatus(Conversation.STATUS_HIGHLIGHT);
-        }
-
-        if (target.equals(this.getNick())) {
+        String queryNick = target;
+        if (queryNick.equals(this.getNick())) {
             // We are the target - this is an action in a query
-            Conversation conversation = server.getConversation(sender);
-            if (conversation == null) {
-                // Open a query if there's none yet
-                conversation = new Query(sender);
-                server.addConversation(conversation);
-                conversation.addMessage(message);
+            queryNick = sender;
+        }
+        conversation = server.getConversation(queryNick);
 
-                Intent intent = Broadcast.createConversationIntent(
-                    Broadcast.CONVERSATION_NEW,
-                    server.getId(),
-                    sender
-                );
-                service.sendBroadcast(intent);
-            } else {
-                Intent intent = Broadcast.createConversationIntent(
-                    Broadcast.CONVERSATION_MESSAGE,
-                    server.getId(),
-                    sender
-                );
-                service.sendBroadcast(intent);
-            }
+        if (conversation == null) {
+            // Open a query if there's none yet
+            conversation = new Query(queryNick);
+            conversation.setHistorySize(service.getSettings().getHistorySize());
+            server.addConversation(conversation);
+            conversation.addMessage(message);
+
+            Intent intent = Broadcast.createConversationIntent(
+                Broadcast.CONVERSATION_NEW,
+                server.getId(),
+                queryNick
+            );
+            service.sendBroadcast(intent);
         } else {
-            // A action in a channel
-            server.getConversation(target).addMessage(message);
+            conversation.addMessage(message);
 
             Intent intent = Broadcast.createConversationIntent(
                 Broadcast.CONVERSATION_MESSAGE,
                 server.getId(),
-                target
+                queryNick
             );
             service.sendBroadcast(intent);
+        }
+
+        if (sender.equals(this.getNick())) {
+            // Don't notify for something sent in our name
+            return;
+        }
+
+        boolean mentioned = isMentioned(action);
+        if (mentioned || target.equals(this.getNick())) {
+            if (conversation.getStatus() != Conversation.STATUS_SELECTED || !server.getIsForeground()) {
+                service.addNewMention(
+                    server.getId(),
+                    conversation,
+                    conversation.getName() + ": " + sender + " " + action,
+                    service.getSettings().isVibrateHighlightEnabled(),
+                    service.getSettings().isSoundHighlightEnabled()
+                );
+            }
+        }
+
+        if (mentioned) {
+            // highlight
+            message.setColor(Message.COLOR_RED);
+            conversation.setStatus(Conversation.STATUS_HIGHLIGHT);
         }
     }
 
@@ -339,9 +378,11 @@ public class IRCConnection extends PircBot
     @Override
     protected void onJoin(String target, String sender, String login, String hostname)
     {
-        if (sender.equalsIgnoreCase(getNick())) {
+        if (sender.equalsIgnoreCase(getNick()) && server.getConversation(target) == null) {
             // We joined a new channel
-            server.addConversation(new Channel(target));
+            Conversation conversation = new Channel(target);
+            conversation.setHistorySize(service.getSettings().getHistorySize());
+            server.addConversation(conversation);
 
             Intent intent = Broadcast.createConversationIntent(
                 Broadcast.CONVERSATION_NEW,
@@ -376,6 +417,7 @@ public class IRCConnection extends PircBot
     {
         if (recipientNick.equals(getNick())) {
             // We are kicked
+            service.ackNewMentions(server.getId(), target);
             server.removeConversation(target);
 
             Intent intent = Broadcast.createConversationIntent(
@@ -405,20 +447,25 @@ public class IRCConnection extends PircBot
     protected void onMessage(String target, String sender, String login, String hostname, String text)
     {
         Message message = new Message(text, sender);
+        Conversation conversation = server.getConversation(target);
 
         if (isMentioned(text)) {
             // highlight
             message.setColor(Message.COLOR_RED);
-            service.updateNotification(
-                target + ": <" + sender + "> " + text,
-                service.getSettings().isVibrateHighlightEnabled(),
-                service.getSettings().isSoundHighlightEnabled()
-            );
+            if (conversation.getStatus() != Conversation.STATUS_SELECTED || !server.getIsForeground()) {
+                service.addNewMention(
+                    server.getId(),
+                    conversation,
+                    target + ": <" + sender + "> " + text,
+                    service.getSettings().isVibrateHighlightEnabled(),
+                    service.getSettings().isSoundHighlightEnabled()
+                );
+            }
 
-            server.getConversation(target).setStatus(Conversation.STATUS_HIGHLIGHT);
+            conversation.setStatus(Conversation.STATUS_HIGHLIGHT);
         }
 
-        server.getConversation(target).addMessage(message);
+        conversation.addMessage(message);
 
         Intent intent = Broadcast.createConversationIntent(
             Broadcast.CONVERSATION_MESSAGE,
@@ -545,6 +592,7 @@ public class IRCConnection extends PircBot
     {
         if (sender.equals(getNick())) {
             // We parted a channel
+            service.ackNewMentions(server.getId(), target);
             server.removeConversation(target);
 
             Intent intent = Broadcast.createConversationIntent(
@@ -576,33 +624,27 @@ public class IRCConnection extends PircBot
      * On Private Message
      */
     @Override
-    protected void onPrivateMessage(String sender, String login, String hostname, String text)
+    protected void onPrivateMessage(String sender, String login, String hostname, String target, String text)
     {
         Message message = new Message("<" + sender + "> " + text);
+        String queryNick = sender;
 
-        if (isMentioned(text)) {
-            message.setColor(Message.COLOR_RED);
-            service.updateNotification(
-                "<" + sender + "> " + text,
-                service.getSettings().isVibrateHighlightEnabled(),
-                service.getSettings().isSoundHighlightEnabled()
-            );
-
-            server.getConversation(sender).setStatus(Conversation.STATUS_HIGHLIGHT);
+        if (queryNick.equals(this.getNick())) {
+            queryNick = target;
         }
-
-        Conversation conversation = server.getConversation(sender);
+        Conversation conversation = server.getConversation(queryNick);
 
         if (conversation == null) {
             // Open a query if there's none yet
-            conversation = new Query(sender);
+            conversation = new Query(queryNick);
+            conversation.setHistorySize(service.getSettings().getHistorySize());
             conversation.addMessage(message);
             server.addConversation(conversation);
 
             Intent intent = Broadcast.createConversationIntent(
                 Broadcast.CONVERSATION_NEW,
                 server.getId(),
-                sender
+                queryNick
             );
             service.sendBroadcast(intent);
         } else {
@@ -611,9 +653,29 @@ public class IRCConnection extends PircBot
             Intent intent = Broadcast.createConversationIntent(
                 Broadcast.CONVERSATION_MESSAGE,
                 server.getId(),
-                sender
+                queryNick
             );
             service.sendBroadcast(intent);
+        }
+
+        if (sender.equals(this.getNick())) {
+            // Don't notify for something sent in our name
+            return;
+        }
+
+        if (conversation.getStatus() != Conversation.STATUS_SELECTED || !server.getIsForeground()) {
+            service.addNewMention(
+                server.getId(),
+                conversation,
+                "<" + sender + "> " + text,
+                service.getSettings().isVibrateHighlightEnabled(),
+                service.getSettings().isSoundHighlightEnabled()
+            );
+        }
+
+        if (isMentioned(text)) {
+            message.setColor(Message.COLOR_RED);
+            conversation.setStatus(Conversation.STATUS_HIGHLIGHT);
         }
     }
 
@@ -692,6 +754,14 @@ public class IRCConnection extends PircBot
 
         Intent intent = Broadcast.createConversationIntent(
             Broadcast.CONVERSATION_MESSAGE,
+            server.getId(),
+            target
+        );
+        service.sendBroadcast(intent);
+
+        // update the displayed conversation title if necessary
+        intent = Broadcast.createConversationIntent(
+            Broadcast.CONVERSATION_TOPIC,
             server.getId(),
             target
         );
@@ -1026,8 +1096,14 @@ public class IRCConnection extends PircBot
             onRegister();
             return;
         }
-        if (code == 372 || code == 375 || code == 376) {
-            // Skip MOTD
+        if ((code == 372 || code == 375) && ignoreMOTD) {
+            return;
+        }
+        if (code == 376 && ignoreMOTD) {
+            Message motdMessage = new Message(service.getString(R.string.message_motd_suppressed));
+            motdMessage.setColor(Message.COLOR_GREY);
+            server.getConversation(ServerInfo.DEFAULT_NAME).addMessage(motdMessage);
+            ignoreMOTD = false;
             return;
         }
 
@@ -1070,14 +1146,13 @@ public class IRCConnection extends PircBot
         if (service.getSettings().isReconnectEnabled() && server.getStatus() != Status.DISCONNECTED) {
             setAutojoinChannels(server.getCurrentChannelNames());
 
-            server.clearConversations();
             server.setStatus(Status.CONNECTING);
             service.connect(server);
         } else {
             server.setStatus(Status.DISCONNECTED);
         }
 
-        service.updateNotification(service.getString(R.string.notification_disconnected, server.getTitle()));
+        service.notifyDisconnected(server.getTitle());
 
         Intent sIntent = Broadcast.createServerIntent(Broadcast.SERVER_UPDATE, server.getId());
         service.sendBroadcast(sIntent);
@@ -1096,6 +1171,13 @@ public class IRCConnection extends PircBot
                 conversation.getName()
             );
             service.sendBroadcast(cIntent);
+        }
+
+        synchronized(isQuittingLock) {
+            isQuitting = false;
+            if (disposeRequested) {
+                super.dispose();
+            }
         }
     }
 
@@ -1171,12 +1253,27 @@ public class IRCConnection extends PircBot
     @Override
     public void quitServer()
     {
+        quitServer(service.getSettings().getQuitMessage());
+    }
+
+    @Override
+    public void quitServer(final String message)
+    {
+        synchronized(isQuittingLock) {
+            isQuitting = true;
+        }
+
         new Thread() {
             @Override
             public void run() {
-                quitServer(service.getSettings().getQuitMessage());
+                superClassQuitServer(message);
             }
         }.start();
+    }
+
+    private final void superClassQuitServer(String message)
+    {
+        super.quitServer(message);
     }
 
     /**
@@ -1196,5 +1293,17 @@ public class IRCConnection extends PircBot
     private void updateNickMatchPattern()
     {
         mNickMatch = Pattern.compile("(?:^|[\\s?!'�:;,.])"+Pattern.quote(getNick())+"(?:[\\s?!'�:;,.]|$)", Pattern.CASE_INSENSITIVE);
+    }
+
+    @Override
+    public void dispose()
+    {
+        synchronized(isQuittingLock) {
+            if (isQuitting) {
+                disposeRequested = true;
+            } else {
+                super.dispose();
+            }
+        }
     }
 }

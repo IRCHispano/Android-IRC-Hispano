@@ -132,6 +132,32 @@ public class Settings
     }
 
     /**
+     * Get the reconnect interval
+     * 
+     * @return The reconnect interval in minutes
+     */
+    public int getReconnectInterval()
+    {
+        return Integer.parseInt(preferences.getString(
+            resources.getString(R.string.key_reconnect_interval),
+            resources.getString(R.string.default_reconnect_interval)
+        ));
+    }
+     
+    /**
+     * Ignore the automatic MOTD?
+     *
+     * @return
+     */
+    public boolean isIgnoreMOTDEnabled()
+    {
+        return preferences.getBoolean(
+            resources.getString(R.string.key_ignore_motd),
+            Boolean.parseBoolean(resources.getString(R.string.default_ignore_motd))
+        );
+    }
+
+    /**
      * Get the quit message
      * 
      * @return The message to display when the user disconnects
@@ -246,5 +272,66 @@ public class Settings
             resources.getString(R.string.key_graphical_smilies),
             Boolean.parseBoolean(resources.getString(R.string.default_graphical_smilies))
         );
+    }
+
+    /**
+     * Whether message text should be autocorrected.
+     */
+    public boolean autoCorrectText()
+    {
+        return preferences.getBoolean(
+            resources.getString(R.string.key_autocorrect_text),
+            Boolean.parseBoolean(resources.getString(R.string.default_autocorrect_text))
+        );
+    }
+
+    /**
+     * Whether sentences in messages should be automatically capitalized.
+     */
+    public boolean autoCapSentences()
+    {
+        return preferences.getBoolean(
+            resources.getString(R.string.key_autocap_sentences),
+            Boolean.parseBoolean(resources.getString(R.string.default_autocap_sentences))
+        );
+    }
+
+    /**
+     * Whether the fullscreen keyboard should be used in landscape mode.
+     */
+    public boolean imeExtract()
+    {
+        return preferences.getBoolean(
+            resources.getString(R.string.key_ime_extract),
+            Boolean.parseBoolean(resources.getString(R.string.default_ime_extract))
+        );
+    }
+
+    /**
+     * Whether conversations should be viewed in Fullscreen glory.
+     */
+    public boolean fullscreenConversations()
+    {
+        return preferences.getBoolean(
+            resources.getString(R.string.key_fullscreen_conversation),
+            Boolean.parseBoolean(resources.getString(R.string.default_fullscreen_conversation))
+        );
+    }
+
+    /**
+     * Get the conversation history size.
+     *
+     * @return The conversation history size
+     */
+    public int getHistorySize()
+    {
+        try {
+            return Integer.parseInt(preferences.getString(
+                resources.getString(R.string.key_history_size),
+                resources.getString(R.string.default_history_size)
+            ));
+        } catch (NumberFormatException e) {
+            return Integer.parseInt(resources.getString(R.string.default_history_size));
+        }
     }
 }

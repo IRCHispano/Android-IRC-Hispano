@@ -22,7 +22,6 @@ package org.yaaic.adapter;
 
 import java.util.LinkedList;
 
-import org.yaaic.R;
 import org.yaaic.listener.MessageClickListener;
 import org.yaaic.model.Conversation;
 import org.yaaic.view.MessageListView;
@@ -30,8 +29,6 @@ import org.yaaic.view.MessageListView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Gallery;
-import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -41,16 +38,28 @@ import android.widget.TextView;
  */
 public class DeckAdapter extends BaseAdapter
 {
-    private LinkedList<Conversation> conversations;
+    private LinkedList<ConversationInfo> conversations;
     private MessageListView currentView;
     private String currentChannel;
+
+    public class ConversationInfo {
+        public Conversation conv;
+        public MessageListAdapter adapter;
+        public MessageListView view;
+
+        public ConversationInfo(Conversation conv) {
+            this.conv = conv;
+            this.adapter = null;
+            this.view = null;
+        }
+    }
 
     /**
      * Create a new DeckAdapter instance
      */
     public DeckAdapter()
     {
-        conversations = new LinkedList<Conversation>();
+        conversations = new LinkedList<ConversationInfo>();
     }
 
     /**
@@ -58,7 +67,7 @@ public class DeckAdapter extends BaseAdapter
      */
     public void clearConversations()
     {
-        conversations = new LinkedList<Conversation>();
+        conversations = new LinkedList<ConversationInfo>();
     }
 
     /**
@@ -71,15 +80,50 @@ public class DeckAdapter extends BaseAdapter
     }
 
     /**
+     * Get ConversationInfo on item at position
+     */
+    private ConversationInfo getItemInfo(int position) {
+        if (position >= 0 && position < conversations.size()) {
+            return conversations.get(position);
+        }
+        return null;
+    }
+
+    /**
      * Get item at position
      */
     @Override
     public Conversation getItem(int position)
     {
-        if (position >= 0 && position < conversations.size()) {
-            return conversations.get(position);
+        ConversationInfo convInfo = getItemInfo(position);
+        if (convInfo != null) {
+            return convInfo.conv;
+        } else {
+            return null;
         }
-        return null;
+    }
+
+    /**
+     * Get MessageListAdapter belonging to a conversation
+     *
+     * @param position Position of the conversation in the deck
+     */
+    public MessageListAdapter getItemAdapter(int position) {
+        ConversationInfo convInfo = getItemInfo(position);
+        if (convInfo != null) {
+            return convInfo.adapter;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get MessageListAdapter belonging to a conversation
+     *
+     * @param name Name of the conversation
+     */
+    public MessageListAdapter getItemAdapter(String name) {
+        return getItemAdapter(getPositionByName(name));
     }
 
     /**
@@ -99,7 +143,7 @@ public class DeckAdapter extends BaseAdapter
      */
     public void addItem(Conversation conversation)
     {
-        conversations.add(conversation);
+        conversations.add(new ConversationInfo(conversation));
 
         notifyDataSetChanged();
     }
@@ -114,10 +158,10 @@ public class DeckAdapter extends BaseAdapter
     {
         // Optimization - cache field lookups
         int mSize = conversations.size();
-        LinkedList<Conversation> mItems = this.conversations;
+        LinkedList<ConversationInfo> mItems = this.conversations;
 
         for (int i = 0; i <  mSize; i++) {
-            if (mItems.get(i).getName().equalsIgnoreCase(name)) {
+            if (mItems.get(i).conv.getName().equalsIgnoreCase(name)) {
                 return i;
             }
         }
@@ -128,16 +172,24 @@ public class DeckAdapter extends BaseAdapter
     /**
      * Remove an item
      * 
-     * @param channel
+     * @param position
      */
-    public void removeItem(String target)
+    public void removeItem(int position)
     {
-        int position = getPositionByName(target);
-
-        if (position != -1) {
+        if (position >= 0 && position < conversations.size()) {
             conversations.remove(position);
             notifyDataSetChanged();
         }
+    }
+
+    /**
+     * Remove an item
+     * 
+     * @param target
+     */
+    public void removeItem(String target)
+    {
+        removeItem(getPositionByName(target));
     }
 
     /**
@@ -178,7 +230,7 @@ public class DeckAdapter extends BaseAdapter
      */
     public boolean isSwitched()
     {
-        return currentView != null;
+        return currentChannel != null;
     }
 
     /**
@@ -187,17 +239,21 @@ public class DeckAdapter extends BaseAdapter
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        Conversation conversation = getItem(position);
+        ConversationInfo convInfo = getItemInfo(position);
 
         // Market stack traces prove that sometimes we get a null converstion
         // because the collection changed while a view is requested for an
         // item that does not exist anymore... so we just need to reply with
         // some kind of view here.
-        if (conversation == null) {
+        if (convInfo == null || convInfo.conv == null) {
             return new TextView(parent.getContext());
         }
 
-        return renderConversation(conversation, parent);
+        if (convInfo.view != null) {
+            return convInfo.view;
+        } else {
+            return renderConversation(convInfo, parent);
+        }
     }
 
     /**
@@ -207,33 +263,26 @@ public class DeckAdapter extends BaseAdapter
      * @param parent The parent view (context)
      * @return The rendered MessageListView
      */
-    public MessageListView renderConversation(Conversation conversation, ViewGroup parent)
+    private MessageListView renderConversation(ConversationInfo convInfo, ViewGroup parent)
     {
         MessageListView list = new MessageListView(parent.getContext(), parent);
+        convInfo.view = list;
         list.setOnItemClickListener(MessageClickListener.getInstance());
 
-        MessageListAdapter adapter = conversation.getMessageListAdapter();
+        MessageListAdapter adapter = convInfo.adapter;
 
         if (adapter == null) {
-            adapter = new MessageListAdapter(conversation, parent.getContext());
-            conversation.setMessageListAdapter(adapter);
+            adapter = new MessageListAdapter(convInfo.conv, parent.getContext());
+            convInfo.adapter = adapter;
         }
 
         list.setAdapter(adapter);
+        list.setSelection(adapter.getCount() - 1); // scroll to bottom
 
-        list.setDivider(null);
-        list.setLayoutParams(new Gallery.LayoutParams(
-            parent.getWidth()*85/100,
-            parent.getHeight()
-        ));
-
-        list.setBackgroundResource(R.layout.rounded);
-        list.setCacheColorHint(0xee000000);
-        list.setPadding(5, 5, 5, 5);
-        list.setVerticalFadingEdgeEnabled(false);
-        list.setScrollBarStyle(ListView.SCROLLBARS_OUTSIDE_INSET);
-        list.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
-        list.setSelection(list.getAdapter().getCount() - 1); // scroll to bottom
+        if (convInfo.conv.getName().equals(currentChannel)) {
+            list.setSwitched(true);
+            currentView = list;
+        }
 
         return list;
     }

@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.NickAlreadyInUseException;
@@ -32,17 +33,22 @@ import org.yaaic.Yaaic;
 import org.yaaic.activity.ServersActivity;
 import org.yaaic.db.Database;
 import org.yaaic.model.Broadcast;
+import org.yaaic.model.Conversation;
 import org.yaaic.model.Message;
 import org.yaaic.model.Server;
 import org.yaaic.model.ServerInfo;
 import org.yaaic.model.Settings;
 import org.yaaic.model.Status;
+import org.yaaic.receiver.ReconnectReceiver;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.SystemClock;
 
 /**
  * The background service for managing the irc connections
@@ -54,6 +60,11 @@ public class IRCService extends Service
     private final IRCBinder binder;
     private final HashMap<Integer, IRCConnection> connections;
     private boolean foreground = false;
+    private final ArrayList<String> connectedServerTitles;
+    private final LinkedHashMap<String, Conversation> mentions;
+    private int newMentions = 0;
+
+    private static final int FOREGROUND_NOTIFICATION = 1;
 
     @SuppressWarnings("rawtypes")
     private static final Class[] mStartForegroundSignature = new Class[] { int.class, Notification.class };
@@ -62,6 +73,9 @@ public class IRCService extends Service
 
     public static final String ACTION_FOREGROUND = "org.yaaic.service.foreground";
     public static final String ACTION_BACKGROUND = "org.yaaic.service.background";
+    public static final String ACTION_ACK_NEW_MENTIONS = "org.yaaic.service.ack_new_mentions";
+    public static final String EXTRA_ACK_SERVERID = "org.yaaic.service.ack_serverid";
+    public static final String EXTRA_ACK_CONVTITLE = "org.yaaic.service.ack_convtitle";
 
     private NotificationManager notificationManager;
     private Method mStartForeground;
@@ -70,6 +84,10 @@ public class IRCService extends Service
     private final Object[] mStopForegroundArgs = new Object[1];
     private Notification notification;
     private Settings settings;
+
+    private HashMap<Integer, PendingIntent> alarmIntents;
+    private HashMap<Integer, ReconnectReceiver> alarmReceivers;
+    private final Object alarmIntentsLock;
 
     /**
      * Create new service
@@ -80,6 +98,11 @@ public class IRCService extends Service
 
         this.connections = new HashMap<Integer, IRCConnection>();
         this.binder = new IRCBinder(this);
+        this.connectedServerTitles = new ArrayList<String>();
+        this.mentions = new LinkedHashMap<String, Conversation>();
+        this.alarmIntents = new HashMap<Integer, PendingIntent>();
+        this.alarmReceivers = new HashMap<Integer, ReconnectReceiver>();
+        this.alarmIntentsLock = new Object();
     }
 
     /**
@@ -166,56 +189,155 @@ public class IRCService extends Service
             foreground = true;
 
             // Set the icon, scrolling text and timestamp
-            notification = new Notification(R.drawable.icon, "", System.currentTimeMillis());
+            notification = new Notification(R.drawable.icon, getText(R.string.notification_running), System.currentTimeMillis());
 
             // The PendingIntent to launch our activity if the user selects this notification
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, ServersActivity.class), 0);
+            Intent notifyIntent = new Intent(this, ServersActivity.class);
+            notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifyIntent, 0);
 
             // Set the info for the views that show in the notification panel.
-            notification.setLatestEventInfo(this, getText(R.string.app_name), "", contentIntent);
+            notification.setLatestEventInfo(this, getText(R.string.app_name), getText(R.string.notification_not_connected), contentIntent);
 
-            startForegroundCompat(R.string.app_name, notification);
+            startForegroundCompat(FOREGROUND_NOTIFICATION, notification);
         } else if (ACTION_BACKGROUND.equals(intent.getAction()) && !foreground) {
-            stopForegroundCompat(R.string.app_name);
+            stopForegroundCompat(FOREGROUND_NOTIFICATION);
+        } else if (ACTION_ACK_NEW_MENTIONS.equals(intent.getAction())) {
+            ackNewMentions(intent.getIntExtra(EXTRA_ACK_SERVERID, -1), intent.getStringExtra(EXTRA_ACK_CONVTITLE));
         }
-    }
-
-    /**
-     * Update notification
-     * 
-     * @param text The text to display
-     */
-    public void updateNotification(String text)
-    {
-        updateNotification(text, false, false);
     }
 
     /**
      * Update notification and vibrate if needed
      *
-     * @param text       The text to display
+     * @param text       The ticker text to display
+     * @param contentText       The text to display in the notification dropdown
      * @param vibrate True if the device should vibrate, false otherwise
+     * @param sound True if the device should make sound, false otherwise
      */
-    public void updateNotification(String text, boolean vibrate, boolean sound)
+    private void updateNotification(String text, String contentText, boolean vibrate, boolean sound)
     {
         if (foreground) {
-            notificationManager.cancel(R.string.app_name);
             notification = new Notification(R.drawable.icon, text, System.currentTimeMillis());
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, ServersActivity.class), 0);
-            notification.setLatestEventInfo(this, getText(R.string.app_name), text, contentIntent);
+            Intent notifyIntent = new Intent(this, ServersActivity.class);
+            notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifyIntent, 0);
+
+            if (contentText == null) {
+                if (newMentions >= 1) {
+                    StringBuilder sb = new StringBuilder();
+                    for (Conversation conv : mentions.values()) {
+                        sb.append(conv.getName() + " (" + conv.getNewMentions() + "), ");
+                    }
+                    contentText = getString(R.string.notification_mentions, sb.substring(0, sb.length()-2));
+                } else if (!connectedServerTitles.isEmpty()) {
+                    StringBuilder sb = new StringBuilder();
+                    for (String title : connectedServerTitles) {
+                        sb.append(title + ", ");
+                    }
+                    contentText = getString(R.string.notification_connected, sb.substring(0, sb.length()-2));
+                } else {
+                    contentText = getString(R.string.notification_not_connected);
+                }
+            }
+
+            notification.setLatestEventInfo(this, getText(R.string.app_name), contentText, contentIntent);
 
             if (vibrate) {
-                long[] pattern = {0,100,200,300};
-                notification.vibrate = pattern;
+                notification.defaults |= Notification.DEFAULT_VIBRATE;
             }
 
             if (sound) {
                 notification.defaults |= Notification.DEFAULT_SOUND;
             }
 
-            notificationManager.notify(R.string.app_name, notification);
+            notification.number = newMentions;
+
+            notificationManager.notify(FOREGROUND_NOTIFICATION, notification);
         }
     }
+
+    /**
+     * Generates a string uniquely identifying a conversation.
+     */
+    public String getConversationId(int serverId, String title) {
+        return "" + serverId + ":" + title;
+    }
+
+    /**
+     * Notify the service of a new mention (updates the status bar notification)
+     *
+     * @param conversation The conversation where the new mention occurred
+     * @param msg The text of the new message
+     * @param vibrate Whether the notification should include vibration
+     * @param sound Whether the notification should include sound
+     */
+    public synchronized void addNewMention(int serverId, Conversation conversation, String msg, boolean vibrate, boolean sound)
+    {
+        if (conversation == null) {
+            return;
+        }
+
+        conversation.addNewMention();
+        ++newMentions;
+        String convId = getConversationId(serverId, conversation.getName());
+        if (!mentions.containsKey(convId)) {
+            mentions.put(convId, conversation);
+        }
+
+        if (newMentions == 1) {
+            updateNotification(msg, msg, vibrate, sound);
+        } else {
+            updateNotification(msg, null, vibrate, sound);
+        }
+    }
+
+    /**
+     * Notify the service that new mentions have been viewed (updates the status bar notification)
+     *
+     * @param convTitle The title of the conversation whose new mentions have been read
+     */
+    public synchronized void ackNewMentions(int serverId, String convTitle)
+    {
+        if (convTitle == null) {
+            return;
+        }
+
+        Conversation conversation = mentions.remove(getConversationId(serverId, convTitle));
+        if (conversation == null) {
+            return;
+        }
+        newMentions -= conversation.getNewMentions();
+        conversation.clearNewMentions();
+        if (newMentions < 0) {
+            newMentions = 0;
+        }
+
+        updateNotification(null, null, false, false);
+    }
+
+    /**
+     * Notify the service of connection to a server (updates the status bar notification)
+     *
+     * @param title The title of the newly connected server
+     */
+    public synchronized void notifyConnected(String title)
+    {
+        connectedServerTitles.add(title);
+        updateNotification(getString(R.string.notification_connected, title), null, false, false);
+    }
+
+    /**
+     * Notify the service of disconnection from a server (updates the status bar notification)
+     *
+     * @param title The title of the disconnected server
+     */
+    public synchronized void notifyDisconnected(String title)
+    {
+        connectedServerTitles.remove(title);
+        updateNotification(getString(R.string.notification_disconnected, title), null, false, false);
+    }
+
 
     /**
      * This is a wrapper around the new startForeground method, using the older
@@ -272,11 +394,31 @@ public class IRCService extends Service
      */
     public void connect(final Server server)
     {
-        new Thread() {
+        final int serverId = server.getId();
+        final int reconnectInterval = settings.getReconnectInterval()*60000;
+        final IRCService service = this;
+
+        if (settings.isReconnectEnabled()) {
+            server.setMayReconnect(true);
+        }
+
+        new Thread("Connect thread for " + server.getTitle()) {
             @Override
             public void run() {
+                synchronized(alarmIntentsLock) {
+                    alarmIntents.remove(serverId);
+                    ReconnectReceiver lastReceiver = alarmReceivers.remove(serverId);
+                    if (lastReceiver != null) {
+                        unregisterReceiver(lastReceiver);
+                    }
+                }
+
+                if (settings.isReconnectEnabled() && !server.mayReconnect()) {
+                    return;
+                }
+
                 try {
-                    IRCConnection connection = getConnection(server.getId());
+                    IRCConnection connection = getConnection(serverId);
 
                     connection.setNickname(server.getIdentity().getNickname());
                     connection.setAliases(server.getIdentity().getAliases());
@@ -288,6 +430,13 @@ public class IRCService extends Service
                         connection.setEncoding(server.getCharset());
                     }
 
+                    if (server.getAuthentication().hasSaslCredentials()) {
+                        connection.setSaslCredentials(
+                            server.getAuthentication().getSaslUsername(),
+                            server.getAuthentication().getSaslPassword()
+                            );
+                    }
+
                     if (server.getPassword() != "") {
                         connection.connect(server.getHost(), server.getPort(), server.getPassword());
                     } else {
@@ -297,19 +446,33 @@ public class IRCService extends Service
                 catch (Exception e) {
                     server.setStatus(Status.DISCONNECTED);
 
-                    Intent sIntent = Broadcast.createServerIntent(Broadcast.SERVER_UPDATE, server.getId());
+                    Intent sIntent = Broadcast.createServerIntent(Broadcast.SERVER_UPDATE, serverId);
                     sendBroadcast(sIntent);
 
-                    IRCConnection connection = getConnection(server.getId());
+                    IRCConnection connection = getConnection(serverId);
 
                     Message message;
 
                     if (e instanceof NickAlreadyInUseException) {
                         message = new Message(getString(R.string.nickname_in_use, connection.getNick()));
+                        server.setMayReconnect(false);
                     } else if (e instanceof IrcException) {
                         message = new Message(getString(R.string.irc_login_error, server.getHost(), server.getPort()));
+                        server.setMayReconnect(false);
                     } else {
                         message = new Message(getString(R.string.could_not_connect, server.getHost(), server.getPort()));
+                        if (settings.isReconnectEnabled()) {
+                            Intent rIntent = new Intent(Broadcast.SERVER_RECONNECT + serverId);
+                            PendingIntent pendingRIntent = PendingIntent.getBroadcast(service, 0, rIntent, 0);
+                            AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+                            ReconnectReceiver receiver = new ReconnectReceiver(service, server);
+                            synchronized(alarmIntentsLock) {
+                                alarmReceivers.put(serverId, receiver);
+                                registerReceiver(receiver, new IntentFilter(Broadcast.SERVER_RECONNECT + serverId));
+                                am.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + reconnectInterval, pendingRIntent);
+                                alarmIntents.put(serverId, pendingRIntent);
+                            }
+                        }
                     }
 
                     message.setColor(Message.COLOR_RED);
@@ -318,9 +481,9 @@ public class IRCService extends Service
 
                     Intent cIntent = Broadcast.createConversationIntent(
                         Broadcast.CONVERSATION_MESSAGE,
-                        server.getId(),
+                        serverId,
                         ServerInfo.DEFAULT_NAME
-                    );
+                        );
                     sendBroadcast(cIntent);
                 }
             }
@@ -367,8 +530,29 @@ public class IRCService extends Service
 
         for (int i = 0; i < mSize; i++) {
             server = mServers.get(i);
-            if (server.isDisconnected()) {
-                connections.remove(server.getId());
+            if (server.isDisconnected() && !server.mayReconnect()) {
+                int serverId = server.getId();
+                synchronized(this) {
+                    IRCConnection connection = connections.get(serverId);
+                    if (connection != null) {
+                        connection.dispose();
+                    }
+                    connections.remove(serverId);
+                }
+
+                synchronized(alarmIntentsLock) {
+                    PendingIntent pendingRIntent = alarmIntents.get(serverId);
+                    if (pendingRIntent != null) {
+                        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+                        am.cancel(pendingRIntent);
+                        alarmIntents.remove(serverId);
+                    }
+                    ReconnectReceiver receiver = alarmReceivers.get(serverId);
+                    if (receiver != null) {
+                        unregisterReceiver(receiver);
+                        alarmReceivers.remove(serverId);
+                    }
+                }
             } else {
                 shutDown = false;
             }
@@ -390,6 +574,20 @@ public class IRCService extends Service
         // Make sure our notification is gone.
         if (foreground) {
             stopForegroundCompat(R.string.app_name);
+        }
+
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        synchronized(alarmIntentsLock) {
+            for (PendingIntent pendingRIntent : alarmIntents.values()) {
+                am.cancel(pendingRIntent);
+            }
+            for (ReconnectReceiver receiver : alarmReceivers.values()) {
+                unregisterReceiver(receiver);
+            }
+            alarmIntents.clear();
+            alarmIntents = null;
+            alarmReceivers.clear();
+            alarmReceivers = null;
         }
     }
 

@@ -27,8 +27,6 @@ import org.yaaic.view.MessageListView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import android.widget.TableLayout.LayoutParams;
 import android.widget.ViewSwitcher;
 
 /**
@@ -61,13 +59,8 @@ public class ConversationClickListener implements OnItemClickListener
     {
         Conversation conversation = adapter.getItem(position);
 
-        MessageListView canvas = adapter.renderConversation(conversation, switcher);
-        canvas.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
-        canvas.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-        canvas.setDelegateTouchEvents(false); // Do not delegate
-
+        MessageListView canvas = (MessageListView) adapter.getView(position, null, switcher);
+        canvas.setSwitched(true);
         adapter.setSwitched(conversation.getName(), canvas);
-        switcher.addView(canvas);
-        switcher.showNext();
     }
 }

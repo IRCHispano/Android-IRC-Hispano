@@ -40,7 +40,9 @@ public class Server
     private String password;
     private String charset;
     private boolean useSSL = false;
+
     private Identity identity;
+    private Authentication authentication;
 
     private final LinkedHashMap<String, Conversation> conversations = new LinkedHashMap<String, Conversation>();
     private ArrayList<String> autoJoinChannels;
@@ -48,6 +50,8 @@ public class Server
 
     private int status = Status.DISCONNECTED;
     private String selected = "";
+    private boolean isForeground = false;
+    private boolean mayReconnect = false;
 
     /**
      * Create a new server object
@@ -69,6 +73,16 @@ public class Server
     }
 
     /**
+     * Set the authentication methods for this server
+     *
+     * @param authentication
+     */
+    public void setAuthentication(Authentication authentication)
+    {
+        this.authentication = authentication;
+    }
+
+    /**
      * Get the identity for this server
      * 
      * @return identity
@@ -76,6 +90,16 @@ public class Server
     public Identity getIdentity()
     {
         return identity;
+    }
+
+    /**
+     * Get the authentication methods for this server;
+     *
+     * @return authentication
+     */
+    public Authentication getAuthentication()
+    {
+        return authentication;
     }
 
     /**
@@ -403,5 +427,37 @@ public class Server
         }
 
         return R.drawable.connecting;
+    }
+
+    /**
+     * Get whether a ConversationActivity for this server is currently in the foreground.
+     */
+    public boolean getIsForeground()
+    {
+        return isForeground;
+    }
+
+    /**
+     * Set whether a ConversationActivity for this server is currently in the foreground.
+     */
+    public void setIsForeground(boolean isForeground)
+    {
+        this.isForeground = isForeground;
+    }
+
+    /**
+     * Get whether a reconnect may be attempted if we're disconnected.
+     */
+    public boolean mayReconnect()
+    {
+        return mayReconnect;
+    }
+
+    /**
+     * Set whether a reconnect may be attempted if we're disconnected.
+     */
+    public void setMayReconnect(boolean mayReconnect)
+    {
+        this.mayReconnect = mayReconnect;
     }
 }
