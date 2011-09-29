@@ -31,7 +31,6 @@ import org.yaaic.irc.IRCService;
 import org.yaaic.layout.NonScalingBackgroundDrawable;
 import org.yaaic.listener.ServerListener;
 import org.yaaic.model.Broadcast;
-import org.yaaic.model.Extra;
 import org.yaaic.model.Server;
 import org.yaaic.model.Status;
 import org.yaaic.receiver.ServerReceiver;
@@ -169,7 +168,7 @@ public class ServersActivity extends ListActivity implements ServiceConnection, 
 
         if (server == null) {
             // "Add server" was selected
-            startActivityForResult(new Intent(this, AddServerActivity.class), 0);
+            // startActivityForResult(new Intent(this, AddServerActivity.class), 0); ### ereslibre
             return;
         }
 
@@ -251,9 +250,9 @@ public class ServersActivity extends ListActivity implements ServiceConnection, 
             Toast.makeText(this, getResources().getString(R.string.disconnect_before_editing), Toast.LENGTH_SHORT).show();
         }
         else {
-            Intent intent = new Intent(this, AddServerActivity.class);
-            intent.putExtra(Extra.SERVER, serverId);
-            startActivityForResult(intent, 0);
+            // Intent intent = new Intent(this, AddServerActivity.class); ### ereslibre
+            // intent.putExtra(Extra.SERVER, serverId); ### ereslibre
+            // startActivityForResult(intent, 0); ### ereslibre
         }
     }
 
@@ -280,7 +279,7 @@ public class ServersActivity extends ListActivity implements ServiceConnection, 
     {
         switch (item.getItemId()) {
             case R.id.add:
-                startActivityForResult(new Intent(this, AddServerActivity.class), 0);
+                // startActivityForResult(new Intent(this, AddServerActivity.class), 0); ### ereslibre
                 break;
             case R.id.about:
                 startActivity(new Intent(this, AboutActivity.class));

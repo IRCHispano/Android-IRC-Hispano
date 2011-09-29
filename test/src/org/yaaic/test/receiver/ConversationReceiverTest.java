@@ -104,4 +104,10 @@ public class ConversationReceiverTest extends AndroidTestCase implements Convers
 		
 		onRemoveConversationCalled = true;
 	}
+
+	@Override
+	public void onTopicChanged(String target) {
+		// TODO Auto-generated method stub
+		
+	}
 }
