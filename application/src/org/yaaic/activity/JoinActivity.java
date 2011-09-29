@@ -28,7 +28,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.Spinner;
 
 /**
  * Small dialog to show an edittext for joining channels
@@ -49,8 +49,6 @@ public class JoinActivity extends Activity implements OnClickListener
         setContentView(R.layout.join);
 
         ((Button) findViewById(R.id.join)).setOnClickListener(this);
-
-        ((EditText) findViewById(R.id.channel)).setSelection(1);
     }
 
     /**
@@ -59,8 +57,9 @@ public class JoinActivity extends Activity implements OnClickListener
     @Override
     public void onClick(View v)
     {
+        Spinner channel = (Spinner) findViewById(R.id.channel);
         Intent intent = new Intent();
-        intent.putExtra("channel", ((EditText) findViewById(R.id.channel)).getText().toString());
+        intent.putExtra("channel", getResources().getStringArray(R.array.default_channels)[channel.getSelectedItemPosition()]);
         setResult(RESULT_OK, intent);
         finish();
     }

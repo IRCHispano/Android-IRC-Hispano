@@ -25,13 +25,12 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:padding="5dp">
-    <EditText
+    <Spinner
         android:id="@+id/channel"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:ems="10"
-        android:text="#" />
+        android:drawSelectorOnTop="true"
+        android:entries="@array/default_channels" />
     <Button
         android:id="@+id/join"
         android:layout_width="fill_parent"
