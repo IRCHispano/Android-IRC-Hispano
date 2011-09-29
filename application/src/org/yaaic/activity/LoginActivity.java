@@ -75,6 +75,7 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
          */
         if (instanceCount > 0) {
             finish();
+            return;
         }
         instanceCount++;
         Yaaic.getInstance().loadServers(this);
@@ -106,6 +107,7 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
                     s.setHost("irc.irc-hispano.org");
                     s.setIdentity(i);
                     s.setPort(6667);
+                    s.setCharset("UTF-8");
                     s.setTitle("IRC-Hispano");
                     db.addServer(s, identity);
 
