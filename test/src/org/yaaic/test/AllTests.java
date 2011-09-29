@@ -35,7 +35,6 @@ public class AllTests {
 		//$JUnit-BEGIN$
 		suite.addTest(org.yaaic.test.model.AllTests.suite());
 		suite.addTest(org.yaaic.test.receiver.AllTests.suite());
-		suite.addTest(org.yaaic.test.scenario.AllTests.suite());
 		//$JUnit-END$
 		return suite;
 	}
