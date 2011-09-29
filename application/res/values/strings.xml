@@ -232,4 +232,5 @@
     <string name="settings_fullscreen_conversation_desc">Fullscreen the application when chatting</string>
     <string name="settings_history_size_title">History size</string>
     <string name="settings_history_size_desc">Number of lines of conversation history to keep</string>
+    <string name="login">Login</string>
 </resources>
