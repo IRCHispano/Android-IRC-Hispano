@@ -536,7 +536,7 @@ public abstract class PircBot implements ReplyConstants {
      * @param password The password which will be used to identify with NickServ.
      */
     public final void identify(String password) {
-        this.sendRawLine("NICKSERV IDENTIFY " + password);
+        this.sendRawLine("NICK IDENTIFY " + password);
     }
 
 
