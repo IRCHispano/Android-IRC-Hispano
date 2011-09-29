@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="default_channels">
+    <item>#iRC-Hispano</item>
+    <item>#Albacete</item>
+    <item>#Alicante</item>
+    <item>#Almeria</item>
+    <item>#Asturias</item>
+    <item>#Badajoz</item>
+    <item>#Barcelona</item>
+    <item>#Bilbao</item>
+    <item>#Burgos</item>
+    <item>#Caceres</item>
+    <item>#Cadiz</item>
+    <item>#Canarias</item>
+    <item>#Cantabria</item>
+    <item>#Castellon</item>
+    <item>#Ciudad_Real</item>
+    <item>#Cordoba</item>
+    <item>#Coruña</item>
+    <item>#De_18_a_25</item>
+    <item>#Girona</item>
+    <item>#Granada</item>
+    <item>#Grancanaria</item>
+    <item>#Huelva</item>
+    <item>#Huesca</item>
+    <item>#Illes_Balears</item>
+    <item>#Jaen</item>
+    <item>#La_Rioja</item>
+    <item>#Las_Palmas</item>
+    <item>#Leon</item>
+    <item>#Lleida</item>
+    <item>#Lugo</item>
+    <item>#Madrid</item>
+    <item>#Malaga</item>
+    <item>#Mexico</item>
+    <item>#Murcia</item>
+    <item>#Navarra</item>
+    <item>#Salamanca</item>
+    <item>#Sevilla</item>
+    <item>#Tarragona</item>
+    <item>#Tenerife</item>
+    <item>#Toledo</item>
+    <item>#Valencia</item>
+    <item>#Valladolid</item>
+    <item>#Vigo</item>
+    <item>#Zaragoza</item>
+    <item>#mexico</item>
+    <item>#peru</item>
+    <item>#venezuela</item>
+  </string-array>
+</resources>
+
