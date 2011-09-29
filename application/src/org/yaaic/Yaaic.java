@@ -62,7 +62,7 @@ public class Yaaic
             db.close();
 
             // context.sendBroadcast(new Intent(Broadcast.SERVER_UPDATE));
-            serversLoaded = true;
+            serversLoaded = !servers.isEmpty();
         }
     }
 
