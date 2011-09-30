@@ -87,7 +87,6 @@ public class IRCService extends Service
 
     private HashMap<Integer, PendingIntent> alarmIntents;
     private HashMap<Integer, ReconnectReceiver> alarmReceivers;
-    private final Object alarmIntentsLock;
 
     /**
      * Create new service
@@ -102,7 +101,6 @@ public class IRCService extends Service
         this.mentions = new LinkedHashMap<String, Conversation>();
         this.alarmIntents = new HashMap<Integer, PendingIntent>();
         this.alarmReceivers = new HashMap<Integer, ReconnectReceiver>();
-        this.alarmIntentsLock = new Object();
     }
 
     /**
@@ -401,7 +399,7 @@ public class IRCService extends Service
         new Thread("Connect thread for " + server.getTitle()) {
             @Override
             public void run() {
-                synchronized(alarmIntentsLock) {
+                synchronized(this) {
                     if (alarmIntents != null) {
                         alarmIntents.remove(serverId);
                     }
@@ -466,7 +464,7 @@ public class IRCService extends Service
                             PendingIntent pendingRIntent = PendingIntent.getBroadcast(service, 0, rIntent, 0);
                             AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
                             ReconnectReceiver receiver = new ReconnectReceiver(service, server);
-                            synchronized(alarmIntentsLock) {
+                            synchronized(this) {
                                 alarmReceivers.put(serverId, receiver);
                                 registerReceiver(receiver, new IntentFilter(Broadcast.SERVER_RECONNECT + serverId));
                                 am.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + reconnectInterval, pendingRIntent);
@@ -543,7 +541,7 @@ public class IRCService extends Service
                     connections.remove(serverId);
                 }
 
-                synchronized(alarmIntentsLock) {
+                synchronized(this) {
                     PendingIntent pendingRIntent = alarmIntents.get(serverId);
                     if (pendingRIntent != null) {
                         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -580,7 +578,7 @@ public class IRCService extends Service
         }
 
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        synchronized(alarmIntentsLock) {
+        synchronized(this) {
             for (PendingIntent pendingRIntent : alarmIntents.values()) {
                 am.cancel(pendingRIntent);
             }
