@@ -39,7 +39,6 @@ public class Yaaic
     public static Yaaic              instance;
 
     private HashMap<Integer, Server> servers;
-    private boolean                  serversLoaded = false;
 
     /**
      * Private constructor, you may want to use static getInstance()
@@ -56,14 +55,9 @@ public class Yaaic
      */
     public void loadServers(Context context)
     {
-        if (!serversLoaded) {
-            Database db = new Database(context);
-            servers = db.getServers();
-            db.close();
-
-            // context.sendBroadcast(new Intent(Broadcast.SERVER_UPDATE));
-            serversLoaded = !servers.isEmpty();
-        }
+        Database db = new Database(context);
+        servers = db.getServers();
+        db.close();
     }
 
     /**

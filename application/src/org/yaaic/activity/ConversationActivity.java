@@ -29,6 +29,7 @@ import org.yaaic.Yaaic;
 import org.yaaic.adapter.DeckAdapter;
 import org.yaaic.adapter.MessageListAdapter;
 import org.yaaic.command.CommandParser;
+import org.yaaic.db.Database;
 import org.yaaic.irc.IRCBinder;
 import org.yaaic.irc.IRCConnection;
 import org.yaaic.irc.IRCService;
@@ -124,6 +125,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
     private int historySize;
 
     private boolean reconnectDialogActive = false;
+    private boolean closingConversation = false;
 
     OnKeyListener inputKeyListener = new OnKeyListener() {
         /**
@@ -467,12 +469,22 @@ public class ConversationActivity extends Activity implements ServiceConnection,
     public boolean onMenuItemSelected(int featureId, MenuItem item)
     {
         switch (item.getItemId()) {
-            case R.id.disconnect:
+            case R.id.changeuser:
+            case R.id.disconnect: // fall through
                 server.setStatus(Status.DISCONNECTED);
                 server.setMayReconnect(false);
                 binder.getService().getConnection(serverId).quitServer();
                 server.clearConversations();
-                finish();
+                if (item.getItemId() == R.id.changeuser) {
+                    closingConversation = true;
+                    Database database = new Database(this);
+                    database.removeServerById(serverId);
+                    Yaaic.getInstance().loadServers(this);
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
+                } else {
+                    finish();
+                }
                 break;
 
             case R.id.close:
@@ -1014,5 +1026,13 @@ public class ConversationActivity extends Activity implements ServiceConnection,
             nick = nick.substring(1);
         }
         return nick;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (closingConversation) {
+            finish();
+        }
     }
 }

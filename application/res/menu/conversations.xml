@@ -36,12 +36,18 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
         android:id="@+id/disconnect"
         android:title="@string/disconnect"
         android:icon="@android:drawable/ic_menu_revert" />
-    <item
-        android:id="@+id/settings"
-        android:title="@string/settings_menu"
-        android:icon="@android:drawable/ic_menu_preferences" />
-    <item
-        android:id="@+id/about"
-        android:title="@string/about_menu"
-        android:icon="@android:drawable/ic_menu_help" />
+	<item
+	    android:id="@+id/changeuser"
+	    android:title="@string/changeuser"
+	    android:icon="@android:drawable/ic_menu_help" />
+    <group android:id="@+id/moreGroup">
+	    <item
+	        android:id="@+id/settings"
+	        android:title="@string/settings_menu"
+	        android:icon="@android:drawable/ic_menu_preferences" />
+	    <item
+	        android:id="@+id/about"
+	        android:title="@string/about_menu"
+	        android:icon="@android:drawable/ic_menu_help" />
+    </group>
 </menu>
