@@ -16,7 +16,7 @@
     <string name="default_24h_format">true</string>
     
     <string name="key_reconnect">reconnect</string>
-    <string name="default_reconnect">false</string>
+    <string name="default_reconnect">true</string>
     
     <string name="key_reconnect_interval">reconnect_interval</string>
     <string name="default_reconnect_interval">5</string>
