@@ -472,7 +472,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                 server.setMayReconnect(false);
                 binder.getService().getConnection(serverId).quitServer();
                 server.clearConversations();
-                setResult(RESULT_OK);
                 finish();
                 break;
 
