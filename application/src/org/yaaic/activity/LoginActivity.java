@@ -57,6 +57,7 @@ import android.widget.EditText;
 public class LoginActivity extends Activity implements ServiceConnection, ServerListener {
     private IRCBinder binder;
     private ServerReceiver receiver;
+    private boolean avoidFinish;
     private static int instanceCount = 0;
 
     /**
@@ -66,6 +67,7 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        avoidFinish = false;
         /*
          * With activity:launchMode = standard, we get duplicated activities
          * depending on the task the app was started in. In order to avoid
@@ -98,6 +100,7 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
                 return true;
             }
             case R.id.settings: {
+                avoidFinish = true;
                 Intent i = new Intent(this, SettingsActivity.class);
                 startActivity(i);
                 return true;
@@ -220,7 +223,11 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
     @Override
     public void onStop() {
         super.onStop();
-        finish();
+        if (!avoidFinish) {
+            finish();
+        } else {
+            avoidFinish = false;
+        }
     }
 
     /**
