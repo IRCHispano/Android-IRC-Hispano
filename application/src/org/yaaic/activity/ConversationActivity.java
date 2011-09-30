@@ -508,6 +508,16 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                     Toast.makeText(this, getResources().getString(R.string.only_usable_from_channel), Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case R.id.settings: {
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.about: {
+                Intent intent = new Intent(this, AboutActivity.class);
+                startActivity(intent);
+                break;
+            }
         }
 
         return true;

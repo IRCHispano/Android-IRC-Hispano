@@ -85,17 +85,23 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.about, menu);
+        inflater.inflate(R.menu.login, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.about:
+            case R.id.about: {
                 Intent i = new Intent(this, AboutActivity.class);
                 startActivity(i);
                 return true;
+            }
+            case R.id.settings: {
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivity(i);
+                return true;
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }
