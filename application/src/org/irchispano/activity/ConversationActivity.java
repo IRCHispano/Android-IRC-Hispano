@@ -487,6 +487,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                 } else {
                     saveAndFinish();
                 }
+                stopService(new Intent(this, IRCService.class));
                 break;
 
             case R.id.close:
@@ -1042,7 +1043,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
         Database database = new Database(this);
         database.setChannels(server.getId(), channels);
         database.close();
-        stopService(new Intent(this, IRCService.class));
         finish();
     }
 }
