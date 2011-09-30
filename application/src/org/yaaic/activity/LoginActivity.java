@@ -75,54 +75,9 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
          */
         if (instanceCount > 0) {
             finish();
-            return;
         }
         instanceCount++;
         Yaaic.getInstance().loadServers(this);
-        if (!tryToConnect()) {
-            setContentView(R.layout.login);
-            final Activity activity = this;
-            final Button login = (Button) findViewById(R.id.login);
-            login.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    final EditText username = (EditText) findViewById(R.id.username);
-                    final EditText password = (EditText) findViewById(R.id.password);
-
-                    Database db = new Database(activity);
-
-                    // Identity
-                    final int identity = (int) db.addIdentity(username.getText().toString(), "android", "android", new ArrayList<String>());
-                    final Identity i = db.getIdentityById(identity);
-
-                    // Authentication
-                    final String passwordStr = password.getText().toString();
-                    Authentication a = new Authentication();
-                    if (!passwordStr.isEmpty()) {
-                        a.setNickservPassword(passwordStr);
-                    }
-
-                    // Server
-                    Server s = new Server();
-                    s.setAuthentication(a);
-                    s.setHost("irc.irc-hispano.org");
-                    s.setIdentity(i);
-                    s.setPort(6667);
-                    s.setCharset("UTF-8");
-                    s.setTitle("IRC-Hispano");
-                    db.addServer(s, identity);
-
-                    db.close();
-
-                    if (tryToConnect()) {
-                        finish();
-                    } else {
-                        Toast.makeText(activity, "Could not connect to IRC-Hispano", Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-        } else {
-            finish();
-        }
     }
 
     private boolean tryToConnect()
@@ -178,6 +133,51 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
 
         receiver = new ServerReceiver(this);
         registerReceiver(receiver, new IntentFilter(Broadcast.SERVER_UPDATE));
+
+        if (!tryToConnect()) {
+            setContentView(R.layout.login);
+            final Activity activity = this;
+            final Button login = (Button) findViewById(R.id.login);
+            login.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    final EditText username = (EditText) findViewById(R.id.username);
+                    final EditText password = (EditText) findViewById(R.id.password);
+
+                    Database db = new Database(activity);
+
+                    // Identity
+                    final int identity = (int) db.addIdentity(username.getText().toString(), "android", "android", new ArrayList<String>());
+                    final Identity i = db.getIdentityById(identity);
+
+                    // Authentication
+                    final String passwordStr = password.getText().toString();
+                    Authentication a = new Authentication();
+                    if (!passwordStr.isEmpty()) {
+                        a.setNickservPassword(passwordStr);
+                    }
+
+                    // Server
+                    Server s = new Server();
+                    s.setAuthentication(a);
+                    s.setHost("irc.irc-hispano.org");
+                    s.setIdentity(i);
+                    s.setPort(6667);
+                    s.setCharset("UTF-8");
+                    s.setTitle("IRC-Hispano");
+                    db.addServer(s, identity);
+
+                    db.close();
+
+                    if (tryToConnect()) {
+                        finish();
+                    } else {
+                        Toast.makeText(activity, "Could not connect to IRC-Hispano", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        } else {
+            finish();
+        }
     }
 
     /**
