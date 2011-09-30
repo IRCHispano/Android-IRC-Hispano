@@ -138,4 +138,12 @@ public class Yaaic
 
         return serverList;
     }
+
+    public int retrieveServerId()
+    {
+        for (Server server : servers.values()) {
+            return server.getId();
+        }
+        return 0;
+    }
 }

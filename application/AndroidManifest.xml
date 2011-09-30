@@ -28,7 +28,8 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
         android:label="IRC-Hispano">
         <activity
             android:name=".activity.LoginActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -36,7 +37,8 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
         </activity>
         <activity
             android:name=".activity.ConversationActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden">
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:launchMode="singleTask">
         </activity>
         <activity
             android:name=".activity.AboutActivity"

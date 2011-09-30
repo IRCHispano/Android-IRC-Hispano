@@ -126,7 +126,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
     private int historySize;
 
     private boolean reconnectDialogActive = false;
-    private boolean closingConversation = false;
 
     OnKeyListener inputKeyListener = new OnKeyListener() {
         /**
@@ -471,23 +470,23 @@ public class ConversationActivity extends Activity implements ServiceConnection,
     {
         switch (item.getItemId()) {
             case R.id.changeuser:
-            case R.id.disconnect: // fall through
+            case R.id.disconnect:
                 server.setStatus(Status.DISCONNECTED);
                 server.setMayReconnect(false);
                 binder.getService().getConnection(serverId).quitServer();
+                stopService(new Intent(this, IRCService.class));
                 channels = server.getCurrentChannelNames();
                 server.clearConversations();
                 if (item.getItemId() == R.id.changeuser) {
-                    closingConversation = true;
                     Database database = new Database(this);
                     database.removeServerById(serverId);
-                    Yaaic.getInstance().loadServers(this);
                     Intent intent = new Intent(this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
+                    finish();
                 } else {
                     saveAndFinish();
                 }
-                stopService(new Intent(this, IRCService.class));
                 break;
 
             case R.id.close:
@@ -1029,14 +1028,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
             nick = nick.substring(1);
         }
         return nick;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (closingConversation) {
-            saveAndFinish();
-        }
     }
 
     private void saveAndFinish() {

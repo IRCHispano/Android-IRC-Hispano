@@ -27,18 +27,14 @@ import org.irchispano.Yaaic;
 import org.irchispano.db.Database;
 import org.irchispano.irc.IRCBinder;
 import org.irchispano.irc.IRCService;
-import org.irchispano.listener.ServerListener;
 import org.irchispano.model.Authentication;
-import org.irchispano.model.Broadcast;
 import org.irchispano.model.Identity;
 import org.irchispano.model.Server;
 import org.irchispano.model.Status;
-import org.irchispano.receiver.ServerReceiver;
 
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -54,11 +50,8 @@ import android.widget.EditText;
  * 
  * @author Sebastian Kaspari <sebastian@yaaic.org>
  */
-public class LoginActivity extends Activity implements ServiceConnection, ServerListener {
+public class LoginActivity extends Activity implements ServiceConnection {
     private IRCBinder binder;
-    private ServerReceiver receiver;
-    private boolean avoidFinish;
-    private static int instanceCount = 0;
 
     /**
      * On create
@@ -67,102 +60,7 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        avoidFinish = false;
-        /*
-         * With activity:launchMode = standard, we get duplicated activities
-         * depending on the task the app was started in. In order to avoid
-         * stacking up of this duplicated activities we keep a count of this
-         * root activity and let it finish if it already exists
-         * 
-         * Launching the app via the notification icon creates a new task,
-         * and there doesn't seem to be a way around this so this is needed
-         */
-        if (instanceCount > 0) {
-            finish();
-        }
-        instanceCount++;
         Yaaic.getInstance().loadServers(this);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.login, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.about: {
-                Intent i = new Intent(this, AboutActivity.class);
-                startActivity(i);
-                return true;
-            }
-            case R.id.settings: {
-                avoidFinish = true;
-                Intent i = new Intent(this, SettingsActivity.class);
-                startActivity(i);
-                return true;
-            }
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private boolean tryToConnect()
-    {
-        Yaaic.getInstance().loadServers(this);
-        ArrayList<Server> servers = Yaaic.getInstance().getServersAsArrayList();
-
-        Server server = null;
-        for (Server server_ : servers) {
-            server = server_;
-        }
-
-        if (server == null) {
-            return false;
-        }
-
-        Intent intent = new Intent(this, ConversationActivity.class);
-
-        if (server.getStatus() == Status.DISCONNECTED && !server.mayReconnect()) {
-            server.setStatus(Status.PRE_CONNECTING);
-            intent.putExtra("connect", true);
-        }
-
-        intent.putExtra("serverId", server.getId());
-        startActivity(intent);
-
-        return true;
-    }
-
-    /**
-     * On Destroy
-     */
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-        instanceCount--;
-    }
-
-    /**
-     * On resume
-     */
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-
-        // Start and connect to service
-        Intent intent = new Intent(this, IRCService.class);
-        intent.setAction(IRCService.ACTION_BACKGROUND);
-        startService(intent);
-        bindService(intent, this, 0);
-
-        receiver = new ServerReceiver(this);
-        registerReceiver(receiver, new IntentFilter(Broadcast.SERVER_UPDATE));
 
         if (!tryToConnect()) {
             setContentView(R.layout.login);
@@ -205,6 +103,73 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.login, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.about: {
+                Intent i = new Intent(this, AboutActivity.class);
+                startActivity(i);
+                return true;
+            }
+            case R.id.settings: {
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivity(i);
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private boolean tryToConnect()
+    {
+        Yaaic.getInstance().loadServers(this);
+        ArrayList<Server> servers = Yaaic.getInstance().getServersAsArrayList();
+
+        Server server = null;
+        for (Server server_ : servers) {
+            server = server_;
+        }
+
+        if (server == null) {
+            return false;
+        }
+
+        Intent intent = new Intent(this, ConversationActivity.class);
+
+        if (server.getStatus() == Status.DISCONNECTED && !server.mayReconnect()) {
+            server.setStatus(Status.PRE_CONNECTING);
+            intent.putExtra("connect", true);
+        }
+
+        intent.putExtra("serverId", server.getId());
+        startActivity(intent);
+
+        return true;
+    }
+
+    /**
+     * On resume
+     */
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        // Start and connect to service
+        Intent intent = new Intent(this, IRCService.class);
+        intent.setAction(IRCService.ACTION_BACKGROUND);
+        startService(intent);
+        bindService(intent, this, 0);
+    }
+
     /**
      * On pause
      */
@@ -218,17 +183,6 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
         }
 
         unbindService(this);
-        unregisterReceiver(receiver);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (!avoidFinish) {
-            finish();
-        } else {
-            avoidFinish = false;
-        }
     }
 
     /**
@@ -247,10 +201,5 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
     public void onServiceDisconnected(ComponentName name)
     {
         binder = null;
-    }
-
-    @Override
-    public void onStatusUpdate()
-    {
     }
 }
