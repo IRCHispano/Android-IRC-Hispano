@@ -398,10 +398,6 @@ public class IRCService extends Service
         final int reconnectInterval = settings.getReconnectInterval()*60000;
         final IRCService service = this;
 
-        if (settings.isReconnectEnabled()) {
-            server.setMayReconnect(true);
-        }
-
         new Thread("Connect thread for " + server.getTitle()) {
             @Override
             public void run() {

@@ -194,6 +194,7 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
                     s.setPort(6667);
                     s.setCharset("ISO-8859-15");
                     s.setTitle("IRC-Hispano");
+                    s.setMayReconnect(true);
                     db.addServer(s, identity);
 
                     db.close();
