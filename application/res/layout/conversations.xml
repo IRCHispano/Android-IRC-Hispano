@@ -19,7 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<org.yaaic.view.ConversationLayout
+<org.irchispano.view.ConversationLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
@@ -51,7 +51,7 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1">
-        <org.yaaic.view.ConversationGallery
+        <org.irchispano.view.ConversationGallery
            android:id="@+id/deck"
            android:layout_width="fill_parent"
            android:layout_height="fill_parent"
@@ -60,7 +60,7 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
            android:spacing="5dp"
            android:padding="0dp" />
     </ViewSwitcher>
-    <org.yaaic.view.ConversationSwitcher
+    <org.irchispano.view.ConversationSwitcher
         android:id="@+id/dots"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -82,4 +82,4 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
             android:drawableLeft="@android:drawable/ic_btn_speak_now"
             android:visibility="gone" />
     </LinearLayout>
-</org.yaaic.view.ConversationLayout>
+</org.irchispano.view.ConversationLayout>

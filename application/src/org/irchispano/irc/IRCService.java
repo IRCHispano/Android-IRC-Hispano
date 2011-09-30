@@ -71,11 +71,11 @@ public class IRCService extends Service
     @SuppressWarnings("rawtypes")
     private static final Class[] mStopForegroundSignature = new Class[] { boolean.class };
 
-    public static final String ACTION_FOREGROUND = "org.yaaic.service.foreground";
-    public static final String ACTION_BACKGROUND = "org.yaaic.service.background";
-    public static final String ACTION_ACK_NEW_MENTIONS = "org.yaaic.service.ack_new_mentions";
-    public static final String EXTRA_ACK_SERVERID = "org.yaaic.service.ack_serverid";
-    public static final String EXTRA_ACK_CONVTITLE = "org.yaaic.service.ack_convtitle";
+    public static final String ACTION_FOREGROUND = "org.irchispano.service.foreground";
+    public static final String ACTION_BACKGROUND = "org.irchispano.service.background";
+    public static final String ACTION_ACK_NEW_MENTIONS = "org.irchispano.service.ack_new_mentions";
+    public static final String EXTRA_ACK_SERVERID = "org.irchispano.service.ack_serverid";
+    public static final String EXTRA_ACK_CONVTITLE = "org.irchispano.service.ack_convtitle";
 
     private NotificationManager notificationManager;
     private Method mStartForeground;
