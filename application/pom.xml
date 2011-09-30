@@ -89,6 +89,7 @@
           <resourceDirectory>${project.build.directory}/filtered-res</resourceDirectory>
         </configuration>
         <executions>
+          <!--
           <execution>
             <id>startEmulator</id>
             <phase>initialize</phase>
@@ -96,6 +97,7 @@
               <goal>emulator-start</goal>
             </goals>
           </execution>
+          -->
           <execution>
             <id>alignApk</id>
             <phase>package</phase>

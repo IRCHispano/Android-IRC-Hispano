@@ -162,7 +162,6 @@ public class IRCService extends Service
      * @param startId
      * @return
      */
-    @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         if (intent != null) {
@@ -435,7 +434,7 @@ public class IRCService extends Service
                         connection.setSaslCredentials(
                             server.getAuthentication().getSaslUsername(),
                             server.getAuthentication().getSaslPassword()
-                        );
+                            );
                     }
 
                     if (server.getPassword() != "") {
@@ -484,7 +483,7 @@ public class IRCService extends Service
                         Broadcast.CONVERSATION_MESSAGE,
                         serverId,
                         ServerInfo.DEFAULT_NAME
-                    );
+                        );
                     sendBroadcast(cIntent);
                 }
             }
