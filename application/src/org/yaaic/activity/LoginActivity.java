@@ -45,7 +45,6 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 /**
  * List of servers
@@ -168,15 +167,9 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
 
                     db.close();
 
-                    if (tryToConnect()) {
-                        finish();
-                    } else {
-                        Toast.makeText(activity, "Could not connect to IRC-Hispano", Toast.LENGTH_LONG).show();
-                    }
+                    tryToConnect();
                 }
             });
-        } else {
-            finish();
         }
     }
 
