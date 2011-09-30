@@ -211,6 +211,12 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
         unregisterReceiver(receiver);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        finish();
+    }
+
     /**
      * Service connected to Activity
      */
