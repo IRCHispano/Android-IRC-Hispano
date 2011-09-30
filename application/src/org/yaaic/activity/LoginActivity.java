@@ -139,8 +139,8 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
             final Button login = (Button) findViewById(R.id.login);
             login.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    final EditText username = (EditText) findViewById(R.id.username);
-                    final EditText password = (EditText) findViewById(R.id.password);
+                    final EditText username = (EditText) findViewById(R.id.nickname);
+                    final EditText password = (EditText) findViewById(R.id.authentication);
 
                     Database db = new Database(activity);
 

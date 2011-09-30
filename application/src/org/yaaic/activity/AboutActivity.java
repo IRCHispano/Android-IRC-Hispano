@@ -24,7 +24,6 @@ import org.yaaic.R;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
@@ -47,14 +46,5 @@ public class AboutActivity extends Activity
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.about);
-
-        mIRCLink = (TextView) findViewById(R.id.about_irclink);
-        mIRCLink.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                // Intent i = new Intent(getBaseContext(), org.yaaic.activity.AddServerActivity.class); ### ereslibre
-                // i.setData(Uri.parse(getString(R.string.app_irc))); ### ereslibre
-                // startActivity(i); ### ereslibre
-            }
-        });
     }
 }

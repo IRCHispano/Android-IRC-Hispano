@@ -33,18 +33,18 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
         android:layout_marginRight="6dip"
         android:src="@drawable/background" />
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/nickname"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
-        android:hint="@string/username" />
+        android:hint="@string/nickname" />
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/authentication"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:password ="true"
-        android:hint="@string/password" />
+        android:hint="@string/authentication" />
     <Button
         android:id="@+id/login"
         android:layout_width="fill_parent"
