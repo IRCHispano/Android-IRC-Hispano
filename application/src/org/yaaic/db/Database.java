@@ -203,7 +203,7 @@ public class Database extends SQLiteOpenHelper
         values.put(ServerConstants.HOST, server.getHost());
         values.put(ServerConstants.PORT, server.getPort());
         values.put(ServerConstants.PASSWORD, server.getPassword());
-        values.put(ServerConstants.AUTOCONNECT, false);
+        values.put(ServerConstants.AUTOCONNECT, server.mayReconnect());
         values.put(ServerConstants.USE_SSL, server.useSSL());
         values.put(ServerConstants.IDENTITY, identityId);
         values.put(ServerConstants.CHARSET, server.getCharset());
@@ -640,6 +640,7 @@ public class Database extends SQLiteOpenHelper
         if (cursor.moveToNext()) {
             identity = new Identity();
 
+            identity.setId(cursor.getInt(cursor.getColumnIndex(IdentityConstants._ID)));
             identity.setNickname(cursor.getString(cursor.getColumnIndex(IdentityConstants.NICKNAME)));
             identity.setIdent(cursor.getString(cursor.getColumnIndex(IdentityConstants.IDENT)));
             identity.setRealName(cursor.getString(cursor.getColumnIndex(IdentityConstants.REALNAME)));

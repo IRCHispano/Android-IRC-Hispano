@@ -65,9 +65,10 @@ public class IRCConnection extends PircBot
      * @param service
      * @param serverId
      */
-    public IRCConnection(IRCService service, int serverId)
+    public IRCConnection(IRCService service, int serverId, ArrayList<String> autoJoin)
     {
         this.server = Yaaic.getInstance().getServerById(serverId);
+        this.server.setAutoJoinChannels(autoJoin);
         this.service = service;
 
         // XXX: Should be configurable via settings
@@ -142,7 +143,7 @@ public class IRCConnection extends PircBot
     public void onConnect()
     {
         server.setStatus(Status.CONNECTED);
-        
+
         server.setMayReconnect(true);
 
         ignoreMOTD = service.getSettings().isIgnoreMOTDEnabled();
@@ -208,10 +209,9 @@ public class IRCConnection extends PircBot
                 // Add support for channel keys
                 joinChannel(channel);
             }
-        } else {
-            for (String channel : server.getAutoJoinChannels()) {
-                joinChannel(channel);
-            }
+        }
+        for (String channel : server.getAutoJoinChannels()) {
+            joinChannel(channel);
         }
 
         Message infoMessage = new Message(service.getString(R.string.message_login_done));

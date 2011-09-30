@@ -162,6 +162,7 @@ public class IRCService extends Service
      * @param startId
      * @return
      */
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         if (intent != null) {
@@ -402,7 +403,9 @@ public class IRCService extends Service
             @Override
             public void run() {
                 synchronized(alarmIntentsLock) {
-                    alarmIntents.remove(serverId);
+                    if (alarmIntents != null) {
+                        alarmIntents.remove(serverId);
+                    }
                     ReconnectReceiver lastReceiver = alarmReceivers.remove(serverId);
                     if (lastReceiver != null) {
                         unregisterReceiver(lastReceiver);
@@ -497,7 +500,10 @@ public class IRCService extends Service
         IRCConnection connection = connections.get(serverId);
 
         if (connection == null) {
-            connection = new IRCConnection(this, serverId);
+            Database database = new Database(this);
+            ArrayList<String> channelList = database.getChannelsByServerId(serverId);
+            database.close();
+            connection = new IRCConnection(this, serverId, channelList);
             connections.put(serverId, connection);
         }
 

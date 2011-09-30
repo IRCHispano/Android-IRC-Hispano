@@ -108,6 +108,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
     private IRCBinder binder;
     private ConversationReceiver channelReceiver;
     private ServerReceiver serverReceiver;
+    private ArrayList<String> channels;
 
     private ViewSwitcher switcher;
     private Gallery deck;
@@ -474,6 +475,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                 server.setStatus(Status.DISCONNECTED);
                 server.setMayReconnect(false);
                 binder.getService().getConnection(serverId).quitServer();
+                channels = server.getCurrentChannelNames();
                 server.clearConversations();
                 if (item.getItemId() == R.id.changeuser) {
                     closingConversation = true;
@@ -483,7 +485,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                     Intent intent = new Intent(this, LoginActivity.class);
                     startActivity(intent);
                 } else {
-                    finish();
+                    saveAndFinish();
                 }
                 break;
 
@@ -1032,7 +1034,14 @@ public class ConversationActivity extends Activity implements ServiceConnection,
     public void onStop() {
         super.onStop();
         if (closingConversation) {
-            finish();
+            saveAndFinish();
         }
+    }
+
+    private void saveAndFinish() {
+        Database database = new Database(this);
+        database.setChannels(server.getId(), channels);
+        database.close();
+        finish();
     }
 }

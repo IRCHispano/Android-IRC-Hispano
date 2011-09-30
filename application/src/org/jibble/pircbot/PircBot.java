@@ -3178,12 +3178,12 @@ public abstract class PircBot implements ReplyConstants {
     private boolean _useSSL = false;
     private boolean _registered = false;
 
-    private String _name = "PircBot";
+    private String _name = "android";
     private final List<String> _aliases = new ArrayList<String>();
     private String _nick = _name;
-    private String _login = "PircBot";
-    private String _version = "PircBot " + VERSION + " Java IRC Bot - www.jibble.org";
-    private String _finger = "You ought to be arrested for fingering a bot!";
+    private String _login = "android";
+    private String _version = "IRC-Hispano Android client";
+    private String _finger = "IRC-Hispano Android client";
 
     private final String _channelPrefixes = "#&+!";
 }
