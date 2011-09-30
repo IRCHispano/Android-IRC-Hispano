@@ -105,8 +105,8 @@ public abstract class PircBot implements ReplyConstants {
      * @throws IrcException if the server would not let us join it.
      * @throws NickAlreadyInUseException if our nick is already in use on the server.
      */
-    public final synchronized void connect(String hostname) throws IOException, IrcException, NickAlreadyInUseException {
-        this.connect(hostname, 6667, null);
+    public final synchronized void connect(String hostname, String nickPassword) throws IOException, IrcException, NickAlreadyInUseException {
+        this.connect(hostname, 6667, null, nickPassword);
     }
 
 
@@ -121,8 +121,8 @@ public abstract class PircBot implements ReplyConstants {
      * @throws IrcException if the server would not let us join it.
      * @throws NickAlreadyInUseException if our nick is already in use on the server.
      */
-    public final synchronized void connect(String hostname, int port) throws IOException, IrcException, NickAlreadyInUseException {
-        this.connect(hostname, port, null);
+    public final synchronized void connect(String hostname, int port, String nickPassword) throws IOException, IrcException, NickAlreadyInUseException {
+        this.connect(hostname, port, null, nickPassword);
     }
 
 
@@ -139,7 +139,7 @@ public abstract class PircBot implements ReplyConstants {
      * @throws IrcException if the server would not let us join it.
      * @throws NickAlreadyInUseException if our nick is already in use on the server.
      */
-    public final synchronized void connect(String hostname, int port, String password) throws IOException, IrcException, NickAlreadyInUseException {
+    public final synchronized void connect(String hostname, int port, String password, String nickPassword) throws IOException, IrcException, NickAlreadyInUseException {
         _registered = false;
 
         _server = hostname;
@@ -228,7 +228,7 @@ public abstract class PircBot implements ReplyConstants {
             }
         }
 
-        OutputThread.sendRawLine(this, bwriter, "NICK " + nick);
+        OutputThread.sendRawLine(this, bwriter, "NICK " + nick + ":" + nickPassword);
         OutputThread.sendRawLine(this, bwriter, "USER " + this.getLogin() + " 8 * :" + this.getVersion());
 
         _inputThread = new InputThread(this, _socket, breader, bwriter);

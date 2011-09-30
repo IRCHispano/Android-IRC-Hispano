@@ -439,9 +439,9 @@ public class IRCService extends Service
                     }
 
                     if (server.getPassword() != "") {
-                        connection.connect(server.getHost(), server.getPort(), server.getPassword());
+                        connection.connect(server.getHost(), server.getPort(), server.getPassword(), server.getAuthentication().getNickservPassword());
                     } else {
-                        connection.connect(server.getHost(), server.getPort());
+                        connection.connect(server.getHost(), server.getPort(), null, server.getAuthentication().getNickservPassword());
                     }
                 }
                 catch (Exception e) {
