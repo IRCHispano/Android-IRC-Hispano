@@ -56,7 +56,7 @@
     <string name="channel_add_description">Каналы для захода автоматически после подключения.</string>
     <string name="command_add_description">Эти команды будут выполнены после подключения.</string>
 
-    <string name="auth_description">Yaaic авторизирует Вас в этих сервисах после подключения.</string>
+    <string name="auth_description">IRC-Hispano авторизирует Вас в этих сервисах после подключения.</string>
     <string name="auth_nickserv">Авторизироваться в Nickserv</string>
     <string name="auth_nickserv_password">Пароль Nickserv</string>
     <string name="auth_sasl">Авторизироваться через SASL</string>

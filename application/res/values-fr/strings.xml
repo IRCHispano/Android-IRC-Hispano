@@ -56,7 +56,7 @@
     <string name="channel_add_description">Ces canaux seront rejoints automatiquement après la connexion.</string>
     <string name="command_add_description">Ces commandes seront exécutées après la connexion.</string>
 
-    <string name="auth_description">Yaaic vous identifiera auprès de ces services après la connexion.</string>
+    <string name="auth_description">IRC-Hispano vous identifiera auprès de ces services après la connexion.</string>
     <string name="auth_nickserv">S\'identifier avec Nickserv</string>
     <string name="auth_nickserv_password">Mot de passe Nickserv</string>
     <string name="auth_sasl">S\'identifier avec SASL</string>
@@ -121,7 +121,7 @@
     <string name="command_desc_voice">Donne le statut de voicé à un utilisateur</string>
     <string name="command_desc_whois">Obtient des informations sur un utilisateur</string>
 
-    <string name="notification_running">Yaaic est en cours</string>
+    <string name="notification_running">IRC-Hispano est en cours</string>
     <string name="notification_connected">Connecté à %1$s</string>
     <string name="notification_disconnected">Déconnecté de %1$s</string>
     <string name="notification_mentions">Nouveaux messages dans : %1$s</string>
