@@ -228,7 +228,11 @@ public abstract class PircBot implements ReplyConstants {
             }
         }
 
-        OutputThread.sendRawLine(this, bwriter, "NICK " + nick + ":" + nickPassword);
+        if (nickPassword == null || nickPassword.isEmpty()) {
+            OutputThread.sendRawLine(this, bwriter, "NICK " + nick);
+        } else {
+            OutputThread.sendRawLine(this, bwriter, "NICK " + nick + ":" + nickPassword);
+        }
         OutputThread.sendRawLine(this, bwriter, "USER " + this.getLogin() + " 8 * :" + this.getVersion());
 
         _inputThread = new InputThread(this, _socket, breader, bwriter);
