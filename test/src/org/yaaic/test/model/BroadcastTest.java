@@ -18,10 +18,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.yaaic.test.model;
+package org.irchispano.test.model;
 
-import org.yaaic.model.Broadcast;
-import org.yaaic.model.Extra;
+import org.irchispano.model.Broadcast;
+import org.irchispano.model.Extra;
 
 import android.content.Intent;
 import junit.framework.TestCase;

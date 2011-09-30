@@ -18,9 +18,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.yaaic.test.model;
+package org.irchispano.test.model;
 
-import org.yaaic.model.Identity;
+import org.irchispano.model.Identity;
 
 import junit.framework.TestCase;
 

@@ -18,11 +18,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.yaaic.test.receiver;
+package org.irchispano.test.receiver;
 
-import org.yaaic.listener.ConversationListener;
-import org.yaaic.model.Broadcast;
-import org.yaaic.receiver.ConversationReceiver;
+import org.irchispano.listener.ConversationListener;
+import org.irchispano.model.Broadcast;
+import org.irchispano.receiver.ConversationReceiver;
 
 import android.content.Intent;
 import android.test.AndroidTestCase;

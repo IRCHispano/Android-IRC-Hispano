@@ -18,15 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.yaaic.test.model;
+package org.irchispano.test.model;
 
-import org.yaaic.model.Channel;
-import org.yaaic.model.Conversation;
-import org.yaaic.model.Identity;
-import org.yaaic.model.Query;
-import org.yaaic.model.Server;
-import org.yaaic.model.ServerInfo;
-import org.yaaic.model.Status;
+import org.irchispano.model.Channel;
+import org.irchispano.model.Conversation;
+import org.irchispano.model.Identity;
+import org.irchispano.model.Query;
+import org.irchispano.model.Server;
+import org.irchispano.model.ServerInfo;
+import org.irchispano.model.Status;
 
 import junit.framework.TestCase;
 
