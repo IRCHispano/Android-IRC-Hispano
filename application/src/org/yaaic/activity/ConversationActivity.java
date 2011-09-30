@@ -680,6 +680,12 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                 });
                 AlertDialog alert = builder.create();
                 alert.show();
+            } else if (binder.getService().getSettings().isReconnectEnabled()) {
+                binder.getService().getConnection(server.getId()).setAutojoinChannels(
+                    server.getCurrentChannelNames()
+                );
+                server.setStatus(Status.CONNECTING);
+                binder.connect(server);
             }
         }
     }
