@@ -192,7 +192,7 @@ public class LoginActivity extends Activity implements ServiceConnection, Server
                     s.setHost("irc.irc-hispano.org");
                     s.setIdentity(i);
                     s.setPort(6667);
-                    s.setCharset("UTF-8");
+                    s.setCharset("ISO-8859-15");
                     s.setTitle("IRC-Hispano");
                     db.addServer(s, identity);
 
