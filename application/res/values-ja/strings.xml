@@ -4,10 +4,10 @@
     <string name="add_server_list">サーバーを追加</string>
 
     <string name="settings_menu">設定</string>
-    <string name="about_menu">Yaaicについて</string>
+    <string name="about_menu">IRC-Hispanocについて</string>
     <string name="exit_menu">終了</string>
 
-    <string name="about_label">Yaaicについて</string>
+    <string name="about_label">IRC-Hispanoについて</string>
     <string name="settings_label">設定</string>
     <string name="join_label">チャンネルへ参加</string>
     <string name="users_label">参加者</string>

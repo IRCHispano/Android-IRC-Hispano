@@ -28,7 +28,7 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Yaaic"
+        android:text="IRC-Hispano"
         android:textSize="20sp"
         android:gravity="center_horizontal"
         android:textColor="#FF6CB600" />
