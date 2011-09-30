@@ -405,9 +405,11 @@ public class IRCService extends Service
                     if (alarmIntents != null) {
                         alarmIntents.remove(serverId);
                     }
-                    ReconnectReceiver lastReceiver = alarmReceivers.remove(serverId);
-                    if (lastReceiver != null) {
-                        unregisterReceiver(lastReceiver);
+                    if (alarmReceivers != null) {
+                        ReconnectReceiver lastReceiver = alarmReceivers.remove(serverId);
+                        if (lastReceiver != null) {
+                            unregisterReceiver(lastReceiver);
+                        }
                     }
                 }
 
