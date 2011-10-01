@@ -121,7 +121,6 @@ public class LoginActivity extends Activity implements ServiceConnection {
             intent.putExtra("connect", true);
         }
 
-        intent.putExtra("serverId", server.getId());
         startActivity(intent);
 
         return true;

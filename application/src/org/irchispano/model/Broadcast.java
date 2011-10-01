@@ -49,7 +49,6 @@ public abstract class Broadcast
     {
         Intent intent = new Intent(broadcastType);
 
-        intent.putExtra(Extra.SERVER, serverId);
         intent.putExtra(Extra.CONVERSATION, conversationName);
 
         return intent;
@@ -64,10 +63,6 @@ public abstract class Broadcast
      */
     public static Intent createServerIntent(String broadcastType, int serverId)
     {
-        Intent intent = new Intent(broadcastType);
-
-        intent.putExtra(Extra.SERVER, serverId);
-
-        return intent;
+        return new Intent(broadcastType);
     }
 }

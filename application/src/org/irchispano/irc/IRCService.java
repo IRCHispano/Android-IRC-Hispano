@@ -191,7 +191,6 @@ public class IRCService extends Service
 
             // The PendingIntent to launch our activity if the user selects this notification
             Intent notifyIntent = new Intent(this, ConversationActivity.class);
-            notifyIntent.putExtra("serverId", Yaaic.getInstance().retrieveServerId());
             notifyIntent.putExtra("connect", false);
             notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifyIntent, 0);
@@ -220,7 +219,6 @@ public class IRCService extends Service
         if (foreground) {
             notification = new Notification(R.drawable.icon, text, System.currentTimeMillis());
             Intent notifyIntent = new Intent(this, ConversationActivity.class);
-            notifyIntent.putExtra("serverId", Yaaic.getInstance().retrieveServerId());
             notifyIntent.putExtra("connect", false);
             notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifyIntent, 0);

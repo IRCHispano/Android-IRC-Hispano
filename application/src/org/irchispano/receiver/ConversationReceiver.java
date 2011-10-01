@@ -20,6 +20,7 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.irchispano.receiver;
 
+import org.irchispano.Yaaic;
 import org.irchispano.listener.ConversationListener;
 import org.irchispano.model.Broadcast;
 import org.irchispano.model.Extra;
@@ -59,7 +60,7 @@ public class ConversationReceiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        int serverId = intent.getExtras().getInt(Extra.SERVER);
+        int serverId = Yaaic.getInstance().retrieveServerId();
         if (serverId != this.serverId) {
             return;
         }

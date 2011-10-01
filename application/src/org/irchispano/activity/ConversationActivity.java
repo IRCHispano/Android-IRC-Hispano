@@ -331,7 +331,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
             if (conversation.getStatus() == Conversation.STATUS_SELECTED && conversation.getNewMentions() > 0) {
                 Intent ackIntent = new Intent(this, IRCService.class);
                 ackIntent.setAction(IRCService.ACTION_ACK_NEW_MENTIONS);
-                ackIntent.putExtra(IRCService.EXTRA_ACK_SERVERID, serverId);
                 ackIntent.putExtra(IRCService.EXTRA_ACK_CONVTITLE, name);
                 startService(ackIntent);
             }
@@ -483,6 +482,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                     database.close();
                     Intent intent = new Intent(this, LoginActivity.class);
                     startActivity(intent);
+                    finish();
                 } else {
                     saveAndFinish();
                 }
