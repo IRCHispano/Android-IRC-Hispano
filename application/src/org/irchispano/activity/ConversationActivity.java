@@ -475,6 +475,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                 server.setMayReconnect(false);
                 binder.getService().getConnection(serverId).quitServer();
                 binder.getService().stopForegroundCompat();
+                stopService(new Intent(this, IRCService.class));
                 channels = server.getCurrentChannelNames();
                 server.clearConversations();
                 if (item.getItemId() == R.id.changeuser) {
