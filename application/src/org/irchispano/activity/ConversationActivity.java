@@ -190,7 +190,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
             this.finish();
         }
 
-        setTitle("Yaaic - " + server.getTitle());
+        setTitle(server.getTitle());
 
         setContentView(R.layout.conversations);
         if (settings.fullscreenConversations()){
@@ -631,12 +631,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
         if (selected.equals(target)) {
             // onTopicChanged is only called for channels
             Channel channel = (Channel) server.getConversation(selected);
-            StringBuilder sb = new StringBuilder();
-            sb.append(server.getTitle() + " - " + channel.getName());
-            if (!(channel.getTopic()).equals("")) {
-                sb.append(" - " + channel.getTopic());
-            }
-            ((TextView) findViewById(R.id.title)).setText(sb.toString());
+            ((TextView) findViewById(R.id.title)).setText(channel.getTopic());
         }
     }
 

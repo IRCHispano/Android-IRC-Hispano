@@ -38,9 +38,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -100,31 +97,6 @@ public class LoginActivity extends Activity implements ServiceConnection {
                     tryToConnect();
                 }
             });
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.login, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.about: {
-                Intent i = new Intent(this, AboutActivity.class);
-                startActivity(i);
-                return true;
-            }
-            case R.id.settings: {
-                Intent i = new Intent(this, SettingsActivity.class);
-                startActivity(i);
-                return true;
-            }
-            default:
-                return super.onOptionsItemSelected(item);
         }
     }
 

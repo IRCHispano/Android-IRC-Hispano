@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 /**
@@ -59,7 +60,14 @@ public class JoinActivity extends Activity implements OnClickListener
     {
         Spinner channel = (Spinner) findViewById(R.id.channel);
         Intent intent = new Intent();
-        intent.putExtra("channel", getResources().getStringArray(R.array.default_channels)[channel.getSelectedItemPosition()]);
+        String channelToJoin = null;
+        String otherChannel = ((EditText) this.findViewById(R.id.other_channel)).getText().toString();
+        if (otherChannel.isEmpty()) {
+            channelToJoin = getResources().getStringArray(R.array.default_channels)[channel.getSelectedItemPosition()];
+        } else {
+            channelToJoin = otherChannel;
+        }
+        intent.putExtra("channel", channelToJoin);
         setResult(RESULT_OK, intent);
         finish();
     }
