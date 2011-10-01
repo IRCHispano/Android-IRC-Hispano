@@ -474,6 +474,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                 server.setStatus(Status.DISCONNECTED);
                 server.setMayReconnect(false);
                 binder.getService().getConnection(serverId).quitServer();
+                binder.getService().stopForegroundCompat();
                 channels = server.getCurrentChannelNames();
                 server.clearConversations();
                 if (item.getItemId() == R.id.changeuser) {

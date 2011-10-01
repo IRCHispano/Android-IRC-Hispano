@@ -201,7 +201,7 @@ public class IRCService extends Service
 
             startForegroundCompat(FOREGROUND_NOTIFICATION, notification);
         } else if (ACTION_BACKGROUND.equals(intent.getAction()) && !foreground) {
-            stopForegroundCompat(FOREGROUND_NOTIFICATION);
+            stopForegroundCompat();
         } else if (ACTION_ACK_NEW_MENTIONS.equals(intent.getAction())) {
             ackNewMentions(intent.getIntExtra(EXTRA_ACK_SERVERID, -1), intent.getStringExtra(EXTRA_ACK_CONVTITLE));
         }
@@ -369,7 +369,7 @@ public class IRCService extends Service
      * This is a wrapper around the new stopForeground method, using the older
      * APIs if it is not available.
      */
-    public void stopForegroundCompat(int id)
+    public void stopForegroundCompat()
     {
         foreground = false;
 
@@ -386,7 +386,7 @@ public class IRCService extends Service
         } else {
             // Fall back on the old API.  Note to cancel BEFORE changing the
             // foreground state, since we could be killed at that point.
-            notificationManager.cancel(id);
+            notificationManager.cancel(FOREGROUND_NOTIFICATION);
             setForeground(false);
         }
     }
@@ -565,7 +565,7 @@ public class IRCService extends Service
 
         if (shutDown) {
             foreground = false;
-            stopForegroundCompat(R.string.app_name);
+            stopForegroundCompat();
             stopSelf();
         }
     }
@@ -578,7 +578,7 @@ public class IRCService extends Service
     {
         // Make sure our notification is gone.
         if (foreground) {
-            stopForegroundCompat(R.string.app_name);
+            stopForegroundCompat();
         }
 
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
