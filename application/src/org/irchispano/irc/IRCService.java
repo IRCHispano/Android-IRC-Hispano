@@ -66,9 +66,9 @@ public class IRCService extends Service
 
     private static final int FOREGROUND_NOTIFICATION = 1;
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings("unchecked")
     private static final Class[] mStartForegroundSignature = new Class[] { int.class, Notification.class };
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings("unchecked")
     private static final Class[] mStopForegroundSignature = new Class[] { boolean.class };
 
     public static final String ACTION_FOREGROUND = "org.irchispano.service.foreground";

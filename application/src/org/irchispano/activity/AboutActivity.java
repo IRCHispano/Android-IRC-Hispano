@@ -25,7 +25,6 @@ import org.irchispano.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Window;
-import android.widget.TextView;
 
 /**
  * About activity
@@ -34,7 +33,6 @@ import android.widget.TextView;
  */
 public class AboutActivity extends Activity
 {
-    private TextView mIRCLink;
     /**
      * On create
      */
