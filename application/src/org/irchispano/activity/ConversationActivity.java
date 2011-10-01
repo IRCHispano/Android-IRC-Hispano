@@ -270,6 +270,9 @@ public class ConversationActivity extends Activity implements ServiceConnection,
     @Override
     public void onResume()
     {
+        serverId = Yaaic.getInstance().retrieveServerId();
+        server = Yaaic.getInstance().getServerById(serverId);
+
         // register the receivers as early as possible, otherwise we may loose a broadcast message
         channelReceiver = new ConversationReceiver(server.getId(), this);
         registerReceiver(channelReceiver, new IntentFilter(Broadcast.CONVERSATION_MESSAGE));
@@ -474,6 +477,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                 server.setMayReconnect(false);
                 binder.getService().getConnection(serverId).quitServer();
                 binder.getService().stopForegroundCompat();
+                stopService(new Intent(this, IRCService.class));
                 channels = server.getCurrentChannelNames();
                 server.clearConversations();
                 if (item.getItemId() == R.id.changeuser) {
