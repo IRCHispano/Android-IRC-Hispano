@@ -237,4 +237,5 @@
     <string name="logout">Logout</string>
     <string name="changeuser">Change User</string>
     <string name="other_channel">#Other</string>
+    <string name="login_realname">Real Name (Optional)</string>
 </resources>

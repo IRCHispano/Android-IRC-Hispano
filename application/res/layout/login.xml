@@ -31,7 +31,9 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
         android:gravity="center_horizontal"
         android:layout_height="wrap_content"
         android:layout_marginRight="6dip"
-        android:src="@drawable/background" />
+        android:src="@drawable/background"
+        android:paddingBottom="40dp"
+        android:paddingTop="40dp" />
     <EditText
         android:id="@+id/nickname"
         android:layout_width="fill_parent"
@@ -45,6 +47,12 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
         android:singleLine="true"
         android:password ="true"
         android:hint="@string/password" />
+    <EditText
+        android:id="@+id/realname"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:hint="@string/login_realname" />
     <Button
         android:id="@+id/login"
         android:layout_width="fill_parent"

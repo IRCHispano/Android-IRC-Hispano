@@ -201,4 +201,10 @@
     <string name="settings_fullscreen_conversation_desc">Maximiza la ventana de chateo</string>
     <string name="settings_history_size_title">Tamaño de historial</string>
     <string name="settings_history_size_desc">Numero de linias que debemos mandener en la ventana</string>
+    <string name="login">Login</string>
+    <string name="password">Contraseña (Opcional)</string>
+    <string name="logout">Salir</string>
+    <string name="changeuser">Cambiar Usuario</string>
+    <string name="otherchannel">#Otro</string>
+    <string name="login_realname">Nombre Real (Opcional)</string>
 </resources>
