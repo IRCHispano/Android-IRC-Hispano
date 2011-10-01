@@ -475,7 +475,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                 server.setMayReconnect(false);
                 binder.getService().getConnection(serverId).quitServer();
                 binder.getService().stopForegroundCompat();
-                stopService(new Intent(this, IRCService.class));
                 channels = server.getCurrentChannelNames();
                 server.clearConversations();
                 if (item.getItemId() == R.id.changeuser) {
@@ -483,9 +482,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                     database.removeServerById(serverId);
                     database.close();
                     Intent intent = new Intent(this, LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                    finish();
                 } else {
                     saveAndFinish();
                 }

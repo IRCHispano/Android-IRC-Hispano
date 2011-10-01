@@ -38,7 +38,8 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
         <activity
             android:name=".activity.ConversationActivity"
             android:windowSoftInputMode="adjustResize|stateHidden"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:noHistory="true">
         </activity>
         <activity
             android:name=".activity.AboutActivity"
