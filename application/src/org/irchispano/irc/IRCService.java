@@ -160,7 +160,6 @@ public class IRCService extends Service
      * @param startId
      * @return
      */
-    @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         if (intent != null) {

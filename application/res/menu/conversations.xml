@@ -39,7 +39,7 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
 	<item
 	    android:id="@+id/changeuser"
 	    android:title="@string/changeuser"
-	    android:icon="@android:drawable/ic_menu_help" />
+	    android:icon="@android:drawable/ic_menu_edit" />
     <group android:id="@+id/moreGroup">
 	    <item
 	        android:id="@+id/settings"
