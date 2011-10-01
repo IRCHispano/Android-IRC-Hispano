@@ -481,6 +481,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                 if (item.getItemId() == R.id.changeuser) {
                     Database database = new Database(this);
                     database.removeServerById(serverId);
+                    database.close();
                     Intent intent = new Intent(this, LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
