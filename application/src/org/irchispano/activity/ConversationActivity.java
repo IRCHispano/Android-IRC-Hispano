@@ -199,8 +199,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
 
         boolean isLandscape = (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 
-        ((TextView) findViewById(R.id.title)).setText(server.getTitle());
-
         EditText input = (EditText) findViewById(R.id.input);
         input.setOnKeyListener(inputKeyListener);
 

@@ -21,17 +21,16 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
 package org.irchispano.listener;
 
 import org.irchispano.irc.IRCService;
-import org.irchispano.model.Channel;
 import org.irchispano.model.Conversation;
 import org.irchispano.model.Server;
 import org.irchispano.view.ConversationSwitcher;
 
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.TextView;
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.TextView;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 /**
  * Listener for conversation selections
@@ -68,11 +67,7 @@ public class ConversationSelectedListener implements OnItemSelectedListener
         Conversation conversation = (Conversation) deck.getItemAtPosition(position);
 
         if (conversation != null && conversation.getType() != Conversation.TYPE_SERVER) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(server.getTitle() + " - " + conversation.getName());
-            if (conversation.getType() == Conversation.TYPE_CHANNEL && !((Channel)conversation).getTopic().equals(""))
-                sb.append(" - " + ((Channel)conversation).getTopic());
-            titleView.setText(sb.toString());
+            titleView.setText(conversation.getName());
         } else {
             onNothingSelected(deck);
         }
