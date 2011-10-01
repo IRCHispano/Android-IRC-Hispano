@@ -67,12 +67,17 @@ public class LoginActivity extends Activity implements ServiceConnection {
                 public void onClick(View v) {
                     final EditText username = (EditText) findViewById(R.id.nickname);
                     final EditText password = (EditText) findViewById(R.id.authentication);
-                    final EditText realname = (EditText) findViewById(R.id.realname);
+                    final EditText realname_ = (EditText) findViewById(R.id.realname);
 
                     Database db = new Database(activity);
 
+                    String realname = realname_.getText().toString();
+                    if (realname.isEmpty()) {
+                        realname = "android";
+                    }
+
                     // Identity
-                    final int identity = (int) db.addIdentity(username.getText().toString(), "android", realname.getText().toString(), new ArrayList<String>());
+                    final int identity = (int) db.addIdentity(username.getText().toString(), "android", realname, new ArrayList<String>());
                     final Identity i = db.getIdentityById(identity);
 
                     // Authentication
