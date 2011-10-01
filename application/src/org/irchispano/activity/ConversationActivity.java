@@ -1029,9 +1029,11 @@ public class ConversationActivity extends Activity implements ServiceConnection,
     }
 
     private void saveAndFinish() {
-        Database database = new Database(this);
-        database.setChannels(server.getId(), channels);
-        database.close();
+        if (!channels.isEmpty()) {
+            Database database = new Database(this);
+            database.setChannels(server.getId(), channels);
+            database.close();
+        }
         finish();
     }
 }
