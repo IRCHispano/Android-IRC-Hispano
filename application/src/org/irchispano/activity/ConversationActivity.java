@@ -181,7 +181,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        serverId = getIntent().getExtras().getInt("serverId");
+        serverId = Yaaic.getInstance().retrieveServerId();
         server = Yaaic.getInstance().getServerById(serverId);
         Settings settings = new Settings(this);
 
