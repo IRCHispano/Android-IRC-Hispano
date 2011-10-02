@@ -62,9 +62,8 @@ public class LoginActivity extends Activity implements ServiceConnection {
     {
         super.onCreate(savedInstanceState);
         Yaaic.getInstance().loadServers(this);
-
+        setContentView(R.layout.login);
         if (!tryToConnect()) {
-            setContentView(R.layout.login);
             final Activity activity = this;
             final Button login = (Button) findViewById(R.id.login);
             login.setOnClickListener(new View.OnClickListener() {
