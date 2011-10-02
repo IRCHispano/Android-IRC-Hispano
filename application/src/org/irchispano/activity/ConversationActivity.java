@@ -187,7 +187,10 @@ public class ConversationActivity extends Activity implements ServiceConnection,
 
         // Finish activity if server does not exist anymore - See #55
         if (server == null) {
-            this.finish();
+            Intent login = new Intent(this, LoginActivity.class);
+            startActivity(login);
+            finish();
+            return;
         }
 
         setTitle(server.getTitle());
