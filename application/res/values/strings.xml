@@ -238,4 +238,5 @@
     <string name="changeuser">Change User</string>
     <string name="other_channel">#Other</string>
     <string name="login_realname">Real Name (Optional)</string>
+    <string name="invalid_nickname">Invalid Nickname</string>
 </resources>

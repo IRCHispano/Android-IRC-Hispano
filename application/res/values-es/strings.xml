@@ -207,4 +207,5 @@
     <string name="changeuser">Cambiar Usuario</string>
     <string name="otherchannel">#Otro</string>
     <string name="login_realname">Nombre Real (Opcional)</string>
+    <string name="invalid_nickname">Nick inválido</string>
 </resources>

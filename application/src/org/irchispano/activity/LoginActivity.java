@@ -21,6 +21,8 @@ along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
 package org.irchispano.activity;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.irchispano.R;
 import org.irchispano.Yaaic;
@@ -41,6 +43,7 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * List of servers
@@ -49,6 +52,7 @@ import android.widget.EditText;
  */
 public class LoginActivity extends Activity implements ServiceConnection {
     private IRCBinder binder;
+    private final Pattern nicknamePattern = Pattern.compile("^[-0-9a-z_]{1,30}$", Pattern.CASE_INSENSITIVE);
 
     /**
      * On create
@@ -68,6 +72,12 @@ public class LoginActivity extends Activity implements ServiceConnection {
                     final EditText username = (EditText) findViewById(R.id.nickname);
                     final EditText password = (EditText) findViewById(R.id.authentication);
                     final EditText realname_ = (EditText) findViewById(R.id.realname);
+
+                    Matcher nicknameMatcher = nicknamePattern.matcher(username.getText().toString());
+                    if (!nicknameMatcher.find()) {
+                        Toast.makeText(activity, getString(R.string.invalid_nickname), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
                     Database db = new Database(activity);
 
