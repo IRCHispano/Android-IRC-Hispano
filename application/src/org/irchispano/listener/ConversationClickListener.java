@@ -54,7 +54,6 @@ public class ConversationClickListener implements OnItemClickListener
     /**
      * On conversation item clicked
      */
-    @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
     {
         Conversation conversation = adapter.getItem(position);

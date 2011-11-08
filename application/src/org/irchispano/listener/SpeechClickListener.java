@@ -51,7 +51,6 @@ public class SpeechClickListener implements OnClickListener
     /**
      * On Click on speech button
      */
-    @Override
     public void onClick(View v)
     {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);

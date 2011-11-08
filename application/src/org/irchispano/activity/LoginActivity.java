@@ -174,7 +174,6 @@ public class LoginActivity extends Activity implements ServiceConnection {
     /**
      * Service connected to Activity
      */
-    @Override
     public void onServiceConnected(ComponentName name, IBinder service)
     {
         binder = (IRCBinder) service;
@@ -183,7 +182,6 @@ public class LoginActivity extends Activity implements ServiceConnection {
     /**
      * Service disconnected from Activity
      */
-    @Override
     public void onServiceDisconnected(ComponentName name)
     {
         binder = null;

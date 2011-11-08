@@ -62,7 +62,6 @@ public class MessageClickListener implements OnItemClickListener
     /**
      * On message item clicked
      */
-    @Override
     public void onItemClick(AdapterView<?> group, View view, int position, long id)
     {
         MessageListAdapter adapter = (MessageListAdapter) group.getAdapter();

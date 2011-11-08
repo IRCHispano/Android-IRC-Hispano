@@ -73,7 +73,6 @@ public class DeckAdapter extends BaseAdapter
     /**
      * Get number of item
      */
-    @Override
     public int getCount()
     {
         return conversations.size();
@@ -92,7 +91,6 @@ public class DeckAdapter extends BaseAdapter
     /**
      * Get item at position
      */
-    @Override
     public Conversation getItem(int position)
     {
         ConversationInfo convInfo = getItemInfo(position);
@@ -129,7 +127,6 @@ public class DeckAdapter extends BaseAdapter
     /**
      * Get id of item at position
      */
-    @Override
     public long getItemId(int position)
     {
         return position;
@@ -236,7 +233,6 @@ public class DeckAdapter extends BaseAdapter
     /**
      * Get view at given position
      */
-    @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
         ConversationInfo convInfo = getItemInfo(position);

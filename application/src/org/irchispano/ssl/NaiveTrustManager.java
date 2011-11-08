@@ -37,7 +37,6 @@ public class NaiveTrustManager implements X509TrustManager
      * 
      * @throws CertificateException if not trusted
      */
-    @Override
     public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException
     {
         // No Exception == Trust
@@ -48,7 +47,6 @@ public class NaiveTrustManager implements X509TrustManager
      * 
      * @throws CertificateException if not trusted
      */
-    @Override
     public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException
     {
         // No Exception == Trust
@@ -57,7 +55,6 @@ public class NaiveTrustManager implements X509TrustManager
     /**
      * Get accepted issuers
      */
-    @Override
     public X509Certificate[] getAcceptedIssuers()
     {
         return new X509Certificate[0];

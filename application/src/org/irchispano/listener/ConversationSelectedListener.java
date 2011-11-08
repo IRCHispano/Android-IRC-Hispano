@@ -29,8 +29,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.TextView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.TextView;
 
 /**
  * Listener for conversation selections
@@ -61,7 +61,6 @@ public class ConversationSelectedListener implements OnItemSelectedListener
     /**
      * On conversation selected/focused
      */
-    @Override
     public void onItemSelected(AdapterView<?> deck, View view, int position, long id)
     {
         Conversation conversation = (Conversation) deck.getItemAtPosition(position);
@@ -98,7 +97,6 @@ public class ConversationSelectedListener implements OnItemSelectedListener
     /**
      * On no conversation selected/focused
      */
-    @Override
     public void onNothingSelected(AdapterView<?> deck)
     {
         titleView.setText(server.getTitle());

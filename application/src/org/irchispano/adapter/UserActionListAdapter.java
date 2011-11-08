@@ -83,7 +83,6 @@ public class UserActionListAdapter extends BaseAdapter
     /**
      * Get number of actions
      */
-    @Override
     public int getCount()
     {
         return actions.length;
@@ -92,7 +91,6 @@ public class UserActionListAdapter extends BaseAdapter
     /**
      * Get object for given position
      */
-    @Override
     public Object getItem(int position)
     {
         return null;
@@ -101,7 +99,6 @@ public class UserActionListAdapter extends BaseAdapter
     /**
      * Get item id for given position
      */
-    @Override
     public long getItemId(int position)
     {
         return actions[position];
@@ -110,7 +107,6 @@ public class UserActionListAdapter extends BaseAdapter
     /**
      * Get view for given position
      */
-    @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
         if (convertView == null) {

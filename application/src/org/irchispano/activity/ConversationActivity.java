@@ -76,9 +76,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnKeyListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -131,7 +131,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
         /**
          * On key pressed (input line)
          */
-        @Override
         public boolean onKey(View view, int keyCode, KeyEvent event)
         {
             EditText input = (EditText) view;
@@ -414,7 +413,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
     /**
      * On service connected
      */
-    @Override
     public void onServiceConnected(ComponentName name, IBinder service)
     {
         this.binder = (IRCBinder) service;
@@ -431,7 +429,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
     /**
      * On service disconnected
      */
-    @Override
     public void onServiceDisconnected(ComponentName name)
     {
         this.binder = null;
@@ -519,8 +516,8 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                         Extra.USERS,
                         binder.getService().getConnection(server.getId()).getUsersAsStringArray(
                             conversationForUserList.getName()
-                        )
-                    );
+                            )
+                        );
                     startActivityForResult(intent, REQUEST_CODE_USERS);
                 } else {
                     Toast.makeText(this, getResources().getString(R.string.only_usable_from_channel), Toast.LENGTH_SHORT).show();
@@ -554,7 +551,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
     /**
      * On conversation message
      */
-    @Override
     public void onConversationMessage(String target)
     {
         Conversation conversation = server.getConversation(target);
@@ -596,7 +592,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
     /**
      * On new conversation
      */
-    @Override
     public void onNewConversation(String target)
     {
         createNewConversation(target);
@@ -614,7 +609,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
     /**
      * On conversation remove
      */
-    @Override
     public void onRemoveConversation(String target)
     {
         deckAdapter.removeItem(target);
@@ -642,7 +636,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
     /**
      * On server status update
      */
-    @Override
     public void onStatusUpdate()
     {
         ((ImageView) findViewById(R.id.status)).setImageResource(server.getStatusIcon());
@@ -669,7 +662,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                 builder.setMessage(getResources().getString(R.string.reconnect_after_disconnect, server.getTitle()))
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
                     public void onClick(DialogInterface dialog, int id) {
                         if (!server.isDisconnected()) {
                             reconnectDialogActive = false;
@@ -677,14 +669,13 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                         }
                         binder.getService().getConnection(server.getId()).setAutojoinChannels(
                             server.getCurrentChannelNames()
-                        );
+                            );
                         server.setStatus(Status.CONNECTING);
                         binder.connect(server);
                         reconnectDialogActive = false;
                     }
                 })
                 .setNegativeButton(getString(R.string.negative_button), new DialogInterface.OnClickListener() {
-                    @Override
                     public void onClick(DialogInterface dialog, int id) {
                         server.setMayReconnect(false);
                         reconnectDialogActive = false;
@@ -696,7 +687,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
             } else if (binder.getService().getSettings().isReconnectEnabled()) {
                 binder.getService().getConnection(server.getId()).setAutojoinChannels(
                     server.getCurrentChannelNames()
-                );
+                    );
                 server.setStatus(Status.CONNECTING);
                 binder.connect(server);
             }
@@ -778,7 +769,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                             nicknameWithoutPrefix.startsWith("+") ||
                             nicknameWithoutPrefix.startsWith(".") ||
                             nicknameWithoutPrefix.startsWith("%")
-                        ) {
+                            ) {
                             // Strip prefix(es) now
                             nicknameWithoutPrefix = nicknameWithoutPrefix.substring(1);
                         }
@@ -787,7 +778,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                             case User.ACTION_REPLY:
                                 final String replyText = nicknameWithoutPrefix + ": ";
                                 handler.post(new Runnable() {
-                                    @Override
                                     public void run() {
                                         EditText input = (EditText) findViewById(R.id.input);
                                         input.setText(replyText);
@@ -807,7 +797,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
                                         Broadcast.CONVERSATION_NEW,
                                         server.getId(),
                                         nicknameWithoutPrefix
-                                    );
+                                        );
                                     binder.getService().sendBroadcast(intent);
                                 }
                                 break;
@@ -942,7 +932,7 @@ public class ConversationActivity extends Activity implements ServiceConnection,
         if (conversationForUserList.getType() == Conversation.TYPE_CHANNEL) {
             users = binder.getService().getConnection(server.getId()).getUsersAsStringArray(
                 conversationForUserList.getName()
-            );
+                );
         }
 
         // go through users and add matches
@@ -996,7 +986,6 @@ public class ConversationActivity extends Activity implements ServiceConnection,
         input.setSelection(start + nick.length());
         input.clearComposingText();
         input.post(new Runnable() {
-            @Override
             public void run() {
                 // make the softkeyboard come up again (only if no hw keyboard is attached)
                 EditText input = (EditText) findViewById(R.id.input);

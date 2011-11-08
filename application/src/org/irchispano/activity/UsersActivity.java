@@ -31,8 +31,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 
 /**
  * User Activity - Shows a list of users in the current channel
@@ -64,7 +64,6 @@ public class UsersActivity extends ListActivity implements OnItemClickListener
     /**
      * On user selected
      */
-    @Override
     public void onItemClick(AdapterView<?> list, View item, int position, long id)
     {
         Intent intent = new Intent();

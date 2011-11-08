@@ -40,7 +40,7 @@ public class MessageListAdapter extends BaseAdapter
 {
     private final LinkedList<TextView> messages;
     private final Context context;
-    private int historySize;
+    private final int historySize;
 
     /**
      * Create a new MessageAdapter
@@ -119,7 +119,6 @@ public class MessageListAdapter extends BaseAdapter
      * 
      * @return
      */
-    @Override
     public int getCount()
     {
         return messages.size();
@@ -131,7 +130,6 @@ public class MessageListAdapter extends BaseAdapter
      * @param position
      * @return
      */
-    @Override
     public TextView getItem(int position)
     {
         return messages.get(position);
@@ -143,7 +141,6 @@ public class MessageListAdapter extends BaseAdapter
      * @param position
      * @return
      */
-    @Override
     public long getItemId(int position)
     {
         return position;
@@ -157,7 +154,6 @@ public class MessageListAdapter extends BaseAdapter
      * @param parent
      * @return
      */
-    @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
         return getItem(position);

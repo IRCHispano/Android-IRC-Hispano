@@ -55,7 +55,6 @@ public class JoinActivity extends Activity implements OnClickListener
     /**
      * On click
      */
-    @Override
     public void onClick(View v)
     {
         Spinner channel = (Spinner) findViewById(R.id.channel);
