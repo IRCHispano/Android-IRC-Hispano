@@ -110,8 +110,11 @@
     <string name="command_desc_voice">Dar permisos de voz a un usuario</string>
     <string name="command_desc_whois">Obtener información sobre un usuario</string>
 
+	<string name="notification_running">IRC-Hispano está en ejecución</string>
+	<string name="notification_not_connected">No conectado</string>
     <string name="notification_connected">Conectado a %1$s</string>
     <string name="notification_disconnected">Desconectado de %1$s</string>
+    <string name="notification_mentions">Nuevos mensajes en: %1$s</string>
 
     <string name="message_connected">Conectado a %1$s</string>
     <string name="message_deop">%1$s ha quitado op de %2$s</string>
@@ -158,9 +161,17 @@
     <string name="settings_connection">Conexión</string>
     <string name="settings_reconnect_title">Reconectar</string>
     <string name="settings_reconnect_desc">Reconectar automáticamente cuando se desconecta</string>
+
+    <string name="settings_reconnect_interval_title">Intervalo de reconexión</string>
+    <string name="settings_reconnect_interval_desc">Número de minutos entre intentos de reconexión</string>
+    <string name="settings_reconnect_interval_dialog_title">Intervalo de reconexión</string>
+
+    <string name="settings_ignore_motd_title">Ignorar MOTD</string>
+    <string name="settings_ignore_motd_desc">No mostrar el MOTD enviado por el servidor</string>
+
     <string name="settings_chat">Chat</string>
-    <string name="settings_icons_title">Mostrar íconos</string>
-    <string name="settings_icons_desc">Mostrar íconos para resaltar eventos especiales</string>
+    <string name="settings_icons_title">Mostrar iconos</string>
+    <string name="settings_icons_desc">Mostrar iconos para resaltar eventos especiales</string>
     <string name="settings_colors_title">Mostrar colores</string>
     <string name="settings_colors_desc">Mostrar colores para resaltar eventos especiales</string>
     <string name="settings_colors_nick_title">Poner los apodos en color</string>
@@ -170,6 +181,12 @@
     <string name="settings_24h_title">Formato de 24 horas</string>
     <string name="settings_24h_desc">Usar formato de 24h para fecha y hora</string>
     
+    <string name="settings_highlight">Menciones</string>
+    <string name="settings_sound_highlight_title">Reproducir sonido</string>
+    <string name="settings_sound_highlight_desc">Reproducir un sonido cuando tu nick es mencionado</string>
+    <string name="settings_vibrate_highlight_title">Vibrar</string>
+    <string name="settings_vibrate_highlight_desc">Vibrar cuando tu nick es mencionado</string>
+
     <string name="settings_misc">Misceláneos</string>
     <string name="settings_quitmessage_title">Quitar mensaje</string>
     <string name="settings_quitmessage_desc">Mensaje para mostrar cuando te desconectas</string>
@@ -180,25 +197,25 @@
     <string name="settings_fontsize_dialog_title">Tamaño de la fuente</string>
     <string name="settings_voice_recognition_title">Reconocimiento de voz</string>
     <string name="settings_voice_recognition_desc">Mostrar botón para reconocimiento de voz</string>
-    <string name="settings_joinpartquit_title">Mostrar mensajes de partida</string>
+    <string name="settings_joinpartquit_title">Mostrar mensajes de salida</string>
     <string name="settings_joinpartquit_desc">Mostrar mensajes cuando salen y entran otros</string>
-    <string name="settings_noticeserverwindow_title">Noticias en ventana del servidor</string>
-    <string name="settings_noticeserverwindow_desc">Muestra noticias del sistema en la ventana del servidor</string>
+    <string name="settings_noticeserverwindow_title">Notificaciones en ventana del servidor</string>
+    <string name="settings_noticeserverwindow_desc">Muestra notificaciones del sistema en la ventana del servidor</string>
     <string name="settings_mirc_colors_title">Mostrar colores de mensajes</string>
     <string name="settings_mirc_colors_desc">Mostrar mensajes mIRC con color</string>
     <string name="settings_graphical_smilies_title">Mostrar emoticonos gráficos</string>
     <string name="settings_graphical_smilies_desc">Emoticonos serán convertidos a imágenes</string>
     <string name="settings_autocorrect_text_title">Auto corregir entradas</string>
-    <string name="settings_autocorrect_text_desc">Usar un diccionario para autocorregir texto</string>
-    <string name="settings_autocap_sentences_title">Auto-capitalizar mensajes</string>
+    <string name="settings_autocorrect_text_desc">Usar un diccionario para auto corregir texto</string>
+    <string name="settings_autocap_sentences_title">Auto capitalizar mensajes</string>
     <string name="settings_autocap_sentences_desc">Automáticamente capitalizar la primera letra en oraciones</string>
-    <string name="settings_ime_extract_title">Ingresos multilinea</string>
-    <string name="settings_ime_extract_desc">Hace la ventana de ingreso mas grande en modo paisaje</string>
-    <string name="settings_fullscreen_conversation_title">Maximizar chateo</string>
-    <string name="settings_fullscreen_conversation_desc">Maximiza la ventana de chateo</string>
-    <string name="settings_history_size_title">Tamaño de historial</string>
+    <string name="settings_ime_extract_title">Entrada de texto multilínea</string>
+    <string name="settings_ime_extract_desc">Hace el campo de texto más grande en modo apaisado</string>
+    <string name="settings_fullscreen_conversation_title">Maximizar ventana de chat</string>
+    <string name="settings_fullscreen_conversation_desc">Maximiza la ventana de chat</string>
+    <string name="settings_history_size_title">Longitud del historial</string>
     <string name="settings_history_size_desc">Numero de lineas que debemos mantener en la ventana</string>
-    <string name="login">Login</string>
+    <string name="login">Acceder</string>
     <string name="password">Contraseña (Opcional)</string>
     <string name="logout">Salir</string>
     <string name="changeuser">Cambiar Usuario</string>

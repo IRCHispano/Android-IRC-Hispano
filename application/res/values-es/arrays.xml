@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="fontsize_labels">
+        <item>8px</item>
+        <item>9px</item>
+        <item>10px</item>
+        <item>11px</item>
+        <item>12px</item>
+        <item>13px</item>
+        <item>14px</item>
+        <item>15px</item>
+        <item>16px</item>
+        <item>17px</item>
+        <item>18px</item>
+        <item>19px</item>
+        <item>20px</item>
+    </string-array>
+    <string-array name="fontsize_values">
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+    </string-array>
+    <string-array name="reconnect_interval_labels">
+        <item>1 minuto</item>
+        <item>5 minutos</item>
+        <item>10 minutos</item>
+        <item>15 minutos</item>
+        <item>20 minutos</item>
+        <item>30 minutos</item>
+    </string-array>
+    <string-array name="reconnect_interval_values">
+        <item>1</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>30</item>
+    </string-array>
+</resources>
