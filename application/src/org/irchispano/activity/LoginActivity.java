@@ -81,7 +81,7 @@ public class LoginActivity extends Activity implements ServiceConnection {
                     Database db = new Database(activity);
 
                     String realname = realname_.getText().toString();
-                    if (realname.isEmpty()) {
+                    if ("".equals(realname)) {
                         realname = "android";
                     }
 
@@ -92,7 +92,7 @@ public class LoginActivity extends Activity implements ServiceConnection {
                     // Authentication
                     final String passwordStr = password.getText().toString();
                     Authentication a = new Authentication();
-                    if (!passwordStr.isEmpty()) {
+                    if (!"".equals(passwordStr)) {
                         a.setNickservPassword(passwordStr);
                     }
 
