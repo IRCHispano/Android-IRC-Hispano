@@ -18,74 +18,39 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Yaaic.  If not, see <http://www.gnu.org/licenses/>.
--->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.irchispano"
-    android:versionCode="11"
-    android:versionName="0.9">
-    <application
-        android:icon="@drawable/icon"
-        android:label="IRC-Hispano">
-        <activity
-            android:name=".activity.LoginActivity"
-            android:label="@string/app_name"
-            android:noHistory="true">
+--><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="13" android:versionName="1.0" package="org.irchispano">
+    <application android:debuggable="false" android:icon="@drawable/icon" android:label="IRC-Hispano">
+        <activity android:label="@string/app_name" android:name=".activity.LoginActivity" android:noHistory="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.ConversationActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"
-            android:launchMode="singleTask">
+        <activity android:launchMode="singleTask" android:name=".activity.ConversationActivity" android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
-        <activity
-            android:name=".activity.AboutActivity"
-            android:label="@string/about_label"
-            android:theme="@android:style/Theme.Dialog">
+        <activity android:label="@string/about_label" android:name=".activity.AboutActivity" android:theme="@android:style/Theme.Dialog">
         </activity>
-        <activity
-            android:name=".activity.SettingsActivity"
-            android:label="@string/settings_label">
+        <activity android:label="@string/settings_label" android:name=".activity.SettingsActivity">
         </activity>
-        <activity
-            android:name=".activity.JoinActivity"
-            android:label="@string/join_label"
-            android:theme="@android:style/Theme.Dialog">
+        <activity android:label="@string/join_label" android:name=".activity.JoinActivity" android:theme="@android:style/Theme.Dialog">
         </activity>
-        <activity
-            android:name=".activity.UsersActivity"
-            android:label="@string/users"
-            android:theme="@android:style/Theme.Dialog">
+        <activity android:label="@string/users" android:name=".activity.UsersActivity" android:theme="@android:style/Theme.Dialog">
         </activity>
-        <activity
-            android:name=".activity.AddAliasActivity"
-            android:theme="@android:style/Theme.Dialog">
+        <activity android:name=".activity.AddAliasActivity" android:theme="@android:style/Theme.Dialog">
         </activity>
-        <activity
-            android:name=".activity.AddChannelActivity"
-            android:theme="@android:style/Theme.Dialog">
+        <activity android:name=".activity.AddChannelActivity" android:theme="@android:style/Theme.Dialog">
            </activity>
-        <activity
-            android:name=".activity.AddCommandsActivity"
-            android:theme="@android:style/Theme.Dialog">
+        <activity android:name=".activity.AddCommandsActivity" android:theme="@android:style/Theme.Dialog">
            </activity>
-        <activity
-            android:name=".activity.MessageActivity"
-            android:theme="@android:style/Theme.Dialog">
+        <activity android:name=".activity.MessageActivity" android:theme="@android:style/Theme.Dialog">
            </activity>
-        <activity
-            android:name=".activity.UserActivity"
-            android:theme="@android:style/Theme.Dialog">
+        <activity android:name=".activity.UserActivity" android:theme="@android:style/Theme.Dialog">
         </activity>
-        <activity
-            android:name=".activity.AuthenticationActivity"
-            android:theme="@android:style/Theme.Dialog">
+        <activity android:name=".activity.AuthenticationActivity" android:theme="@android:style/Theme.Dialog">
         </activity>
-        <service android:name=".irc.IRCService"></service>
+        <service android:name=".irc.IRCService"/>
     </application>
-    <uses-sdk android:minSdkVersion="7" />
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
-</manifest> 
+    <uses-sdk android:minSdkVersion="7"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+</manifest>
