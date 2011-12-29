@@ -61,7 +61,7 @@ public class JoinActivity extends Activity implements OnClickListener
         Intent intent = new Intent();
         String channelToJoin = null;
         String otherChannel = ((EditText) this.findViewById(R.id.other_channel)).getText().toString();
-        if ("".equals(otherChannel)) {
+        if (otherChannel.equals("")) {
             channelToJoin = getResources().getStringArray(R.array.default_channels)[channel.getSelectedItemPosition()];
         } else {
             channelToJoin = otherChannel;
