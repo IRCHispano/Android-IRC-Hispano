@@ -101,7 +101,7 @@ public class LoginActivity extends Activity implements ServiceConnection {
                     s.setAuthentication(a);
                     s.setHost("irc.irc-hispano.org");
                     s.setIdentity(i);
-                    s.setPort(6667);
+                    s.setPort(80);
                     s.setCharset("ISO-8859-15");
                     s.setTitle("IRC-Hispano");
                     s.setMayReconnect(true);
