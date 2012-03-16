@@ -99,7 +99,7 @@ public class LoginActivity extends Activity implements ServiceConnection {
                     // Server
                     Server s = new Server();
                     s.setAuthentication(a);
-                    s.setHost("android.irc-hispano.org");
+                    s.setHost("android.irc-hispano.es");
                     s.setIdentity(i);
                     s.setPort(80);
                     s.setCharset("ISO-8859-15");
